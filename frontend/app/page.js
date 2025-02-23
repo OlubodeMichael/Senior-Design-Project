@@ -30,7 +30,7 @@ function Navigation() {
 
   return (
     <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-      scrolled || isMenuOpen ? 'bg-white shadow-lg' : 'bg-transparent'
+      scrolled || isMenuOpen ? 'bg-white shadow-lg' : 'bg-white'
     }`}>
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
@@ -264,19 +264,19 @@ function Features() {
 
 function About() {
   return (
-    <section id="about" className="py-24 px-4 bg-gradient-to-b from-white to-gray-50">
+    <section id="about" className="py-24 px-4 bg-gradient-to-b from-white to-gray-50 select-none">
       <div className="max-w-7xl mx-auto">
         <FadeInSection>
           <div className="text-center mb-20">
             <div className="inline-block mb-4 transform hover:scale-105 transition-transform duration-300">
-              <span className="bg-blue-50 text-blue-600 text-sm font-medium px-6 py-2 rounded-full">
+              <span className="bg-blue-50 text-blue-600 text-sm font-medium px-6 py-2 rounded-full cursor-default">
                 About CollabFlow
               </span>
             </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-8 tracking-tight">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-8 tracking-tight select-text">
               Streamlined Project<br />Management for Teams
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed select-text">
               An affordable, user-friendly platform designed specifically for startups, small companies, 
               and student teams who need structured collaboration without complexity.
             </p>
@@ -290,10 +290,10 @@ function About() {
               <div className="group transform hover:translate-x-1 transition-transform duration-300">
                 <div className="flex flex-col space-y-6">
                   <h3 className="text-4xl font-bold bg-gradient-to-r from-[#40A9FF] to-[#9333EA] text-transparent bg-clip-text 
-                    group-hover:scale-[1.02] transition-transform duration-300">
+                    group-hover:scale-[1.02] transition-transform duration-300 select-text">
                     Improve collaboration
                   </h3>
-                  <p className="text-lg text-gray-700 leading-relaxed max-w-3xl">
+                  <p className="text-lg text-gray-700 leading-relaxed max-w-3xl select-text">
                     Consolidate tasks, deadlines, and team communication in one place. 
                     Our platform helps small teams avoid the complexity of enterprise solutions 
                     while maintaining professional project management standards.
@@ -313,10 +313,10 @@ function About() {
               {/* Enhance Visibility */}
               <div className="group transform hover:translate-x-1 transition-transform duration-300">
                 <div className="flex flex-col space-y-6">
-                  <h3 className="text-4xl font-bold text-[#B8A8E3] group-hover:scale-[1.02] transition-transform duration-300">
+                  <h3 className="text-4xl font-bold text-[#B8A8E3] group-hover:scale-[1.02] transition-transform duration-300 select-text">
                     Enhance visibility
                   </h3>
-                  <p className="text-lg text-gray-700 leading-relaxed max-w-3xl">
+                  <p className="text-lg text-gray-700 leading-relaxed max-w-3xl select-text">
                     Give managers clear insights into workflows and resource allocation without heavy 
                     administrative overhead. Track progress, identify bottlenecks, and make data-driven 
                     decisions with essential reporting functions.
@@ -327,10 +327,10 @@ function About() {
               {/* Real-time Updates */}
               <div className="group transform hover:translate-x-1 transition-transform duration-300">
                 <div className="flex flex-col space-y-6">
-                  <h3 className="text-4xl font-bold text-[#D8CCF6] group-hover:scale-[1.02] transition-transform duration-300">
+                  <h3 className="text-4xl font-bold text-[#D8CCF6] group-hover:scale-[1.02] transition-transform duration-300 select-text">
                     Real-time updates
                   </h3>
-                  <p className="text-lg text-gray-700 leading-relaxed max-w-3xl">
+                  <p className="text-lg text-gray-700 leading-relaxed max-w-3xl select-text">
                     Keep everyone aligned with role-based access and real-time notifications. 
                     Avoid miscommunication and duplicated work by centralizing project information 
                     and updates in a single, accessible platform.
@@ -436,9 +436,9 @@ function Footer() {
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-white">
       <Navigation />
-      <main className="flex-grow">
+      <main className="flex-grow pt-[72px]">
         <Hero />
         <FadeInSection>
           <About />
