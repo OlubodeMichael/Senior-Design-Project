@@ -140,26 +140,26 @@ function Navigation() {
 
 function Hero() {
   return (
-    <section className="pt-28 md:pt-32 pb-16 md:pb-20 px-4 bg-gradient-to-b from-gray-50 to-white">
+    <section className="min-h-screen pt-32 sm:pt-36 md:pt-40 lg:pt-44 pb-12 sm:pb-16 md:pb-20 px-4 bg-gradient-to-b from-gray-50 to-white flex items-center">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center max-w-4xl mx-auto mb-12 md:mb-16">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight">
+        <div className="text-center max-w-4xl mx-auto mb-8 sm:mb-12 md:mb-16">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6 leading-tight">
             The Optimal Solution for Collaborative Tasks Across Diverse Functions.
           </h1>
-          <p className="text-base md:text-xl text-gray-600 mb-6 md:mb-8 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto px-2 sm:px-4">
             Welcome to a smarter way of managing tasks and products. Our comprehensive suite is designed to streamline your 
             workflow, enhance collaboration, and ensure seamless project success.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
             <Link href="/signup" className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 
-                transition-all duration-300 font-medium text-sm md:text-base">
+              <button className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 
+                transition-all duration-300 font-medium text-sm sm:text-base">
                 Get Started
               </button>
             </Link>
             <Link href="/demo" className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto px-6 sm:px-8 py-2.5 sm:py-3 border-2 border-gray-300 text-gray-700 rounded-lg 
-                hover:border-blue-600 hover:text-blue-600 transition-all duration-300 font-medium text-sm md:text-base">
+              <button className="w-full sm:w-auto px-6 sm:px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-lg 
+                hover:border-blue-600 hover:text-blue-600 transition-all duration-300 font-medium text-sm sm:text-base">
                 Try for Free
               </button>
             </Link>
@@ -167,7 +167,7 @@ function Hero() {
         </div>
 
         {/* Browser-style frame for dashboard preview */}
-        <div className="relative mx-auto max-w-6xl">
+        <div className="relative mx-auto max-w-6xl px-2 sm:px-4 md:px-6">
           <div className="bg-white rounded-xl overflow-hidden shadow-2xl border border-gray-200">
             {/* Browser Controls */}
             <div className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border-b border-gray-200">
