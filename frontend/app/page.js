@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import FadeInSection from '@/app/_components/FadeInSection';
 
 function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -142,63 +143,67 @@ function Hero() {
   return (
     <section className="min-h-screen pt-32 sm:pt-36 md:pt-40 lg:pt-44 pb-12 sm:pb-16 md:pb-20 px-4 bg-gradient-to-b from-gray-50 to-white flex items-center">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center max-w-4xl mx-auto mb-8 sm:mb-12 md:mb-16">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6 leading-tight">
-            The Optimal Solution for Collaborative Tasks Across Diverse Functions.
-          </h1>
-          <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto px-2 sm:px-4">
-            Welcome to a smarter way of managing tasks and products. Our comprehensive suite is designed to streamline your 
-            workflow, enhance collaboration, and ensure seamless project success.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
-            <Link href="/signup" className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 
-                transition-all duration-300 font-medium text-sm sm:text-base">
-                Get Started
-              </button>
-            </Link>
-            <Link href="/demo" className="w-full sm:w-auto">
-              <button className="w-full sm:w-auto px-6 sm:px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-lg 
-                hover:border-blue-600 hover:text-blue-600 transition-all duration-300 font-medium text-sm sm:text-base">
-                Try for Free
-              </button>
-            </Link>
+        <FadeInSection duration={800} delay={200}>
+          <div className="text-center max-w-4xl mx-auto mb-8 sm:mb-12 md:mb-16">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-3 sm:mb-4 md:mb-6 leading-tight">
+              The Optimal Solution for Collaborative Tasks Across Diverse Functions.
+            </h1>
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto px-2 sm:px-4">
+              Welcome to a smarter way of managing tasks and products. Our comprehensive suite is designed to streamline your 
+              workflow, enhance collaboration, and ensure seamless project success.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
+              <Link href="/signup" className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto px-6 sm:px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 
+                  transition-all duration-300 font-medium text-sm sm:text-base">
+                  Get Started
+                </button>
+              </Link>
+              <Link href="/demo" className="w-full sm:w-auto">
+                <button className="w-full sm:w-auto px-6 sm:px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-lg 
+                  hover:border-blue-600 hover:text-blue-600 transition-all duration-300 font-medium text-sm sm:text-base">
+                  Try for Free
+                </button>
+              </Link>
+            </div>
           </div>
-        </div>
+        </FadeInSection>
 
-        {/* Browser-style frame for dashboard preview */}
-        <div className="relative mx-auto max-w-6xl px-2 sm:px-4 md:px-6">
-          <div className="bg-white rounded-xl overflow-hidden shadow-2xl border border-gray-200">
-            {/* Browser Controls */}
-            <div className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border-b border-gray-200">
-              <div className="flex gap-1.5 sm:gap-2">
-                <div className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full bg-[#FF5F57]"></div>
-                <div className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full bg-[#FEBC2E]"></div>
-                <div className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full bg-[#28C840]"></div>
-              </div>
-              <div className="flex-1 flex justify-center">
-                <div className="bg-white rounded-md px-4 sm:px-20 py-1 text-xs sm:text-sm text-gray-600 flex items-center gap-2 border border-gray-200">
-                  <svg className="w-3 sm:w-4 h-3 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="hidden sm:inline">collabflow.com</span>
+        <FadeInSection duration={1000} delay={500}>
+          {/* Browser-style frame for dashboard preview */}
+          <div className="relative mx-auto max-w-6xl px-2 sm:px-4 md:px-6">
+            <div className="bg-white rounded-xl overflow-hidden shadow-2xl border border-gray-200">
+              {/* Browser Controls */}
+              <div className="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border-b border-gray-200">
+                <div className="flex gap-1.5 sm:gap-2">
+                  <div className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full bg-[#FF5F57]"></div>
+                  <div className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full bg-[#FEBC2E]"></div>
+                  <div className="w-2.5 sm:w-3 h-2.5 sm:h-3 rounded-full bg-[#28C840]"></div>
+                </div>
+                <div className="flex-1 flex justify-center">
+                  <div className="bg-white rounded-md px-4 sm:px-20 py-1 text-xs sm:text-sm text-gray-600 flex items-center gap-2 border border-gray-200">
+                    <svg className="w-3 sm:w-4 h-3 sm:h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                    </svg>
+                    <span className="hidden sm:inline">collabflow.com</span>
+                  </div>
                 </div>
               </div>
+              
+              {/* Dashboard Image */}
+              <div className="relative bg-white">
+                <img 
+                  src="/dashboard.png" 
+                  alt="CollabFlow Dashboard"
+                  className="w-full"
+                />
+              </div>
             </div>
-            
-            {/* Dashboard Image */}
-            <div className="relative bg-white">
-              <img 
-                src="/dashboard.png" 
-                alt="CollabFlow Dashboard"
-                className="w-full"
-              />
-            </div>
-          </div>
 
-          {/* Optional decorative elements */}
-          <div className="absolute -z-10 inset-0 bg-gradient-to-r from-pink-100 via-purple-100 to-blue-100 blur-3xl opacity-30 transform translate-y-8 scale-95"></div>
-        </div>
+            {/* Optional decorative elements */}
+            <div className="absolute -z-10 inset-0 bg-gradient-to-r from-pink-100 via-purple-100 to-blue-100 blur-3xl opacity-30 transform translate-y-8 scale-95"></div>
+          </div>
+        </FadeInSection>
       </div>
     </section>
   );
@@ -232,20 +237,24 @@ function Features() {
   return (
     <section id="features" className="py-16 bg-white px-4">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-          Everything you need to manage projects effectively
-        </h2>
+        <FadeInSection>
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+            Everything you need to manage projects effectively
+          </h2>
+        </FadeInSection>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="bg-gray-50 p-8 rounded-xl">
-              <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  {feature.icon}
-                </svg>
+            <FadeInSection key={index} delay={index * 200}>
+              <div className="bg-gray-50 p-8 rounded-xl">
+                <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {feature.icon}
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
-            </div>
+            </FadeInSection>
           ))}
         </div>
       </div>
@@ -300,31 +309,35 @@ function Pricing() {
   return (
     <section id="pricing" className="py-16 px-4 bg-gray-50">
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-          Simple, Transparent Pricing
-        </h2>
+        <FadeInSection>
+          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+            Simple, Transparent Pricing
+          </h2>
+        </FadeInSection>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {plans.map((plan, index) => (
-            <div key={index} className="bg-white p-8 rounded-xl shadow-lg">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-              <div className="text-4xl font-bold text-blue-600 mb-4">{plan.price}</div>
-              <p className="text-gray-600 mb-6">{plan.description}</p>
-              <ul className="space-y-3 mb-8">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-center text-gray-600">
-                    <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <Link href="/signup">
-                <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                  Get Started
-                </button>
-              </Link>
-            </div>
+            <FadeInSection key={index} delay={index * 200}>
+              <div className="bg-white p-8 rounded-xl shadow-lg">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                <div className="text-4xl font-bold text-blue-600 mb-4">{plan.price}</div>
+                <p className="text-gray-600 mb-6">{plan.description}</p>
+                <ul className="space-y-3 mb-8">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-center text-gray-600">
+                      <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+                <Link href="/signup">
+                  <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                    Get Started
+                  </button>
+                </Link>
+              </div>
+            </FadeInSection>
           ))}
         </div>
       </div>
@@ -336,23 +349,23 @@ function About() {
   return (
     <section id="about" className="py-20 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <div className="inline-block mb-4">
-            <span className="bg-blue-50 text-blue-600 text-sm font-medium px-4 py-1.5 rounded-full">
-              About CollabFlow
-            </span>
+        <FadeInSection>
+          <div className="text-center mb-16">
+            <div className="inline-block mb-4">
+              <span className="bg-blue-50 text-blue-600 text-sm font-medium px-4 py-1.5 rounded-full">
+                About CollabFlow
+              </span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+              Built for Modern Teams Who Value Efficiency
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              CollabFlow was created with a simple mission: to make project management 
+              accessible and efficient for teams of all sizes.
+            </p>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-            Built for Modern Teams Who Value Efficiency
-          </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            CollabFlow was created with a simple mission: to make project management 
-            accessible and efficient for teams of all sizes. We understand the challenges 
-            that modern teams face in today's fast-paced work environment.
-          </p>
-        </div>
+        </FadeInSection>
 
-        {/* Core Features */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           {[
             {
@@ -371,18 +384,16 @@ function About() {
               description: "Enhanced team collaboration tools to keep everyone aligned and productive."
             }
           ].map((feature, index) => (
-            <div 
-              key={index}
-              className="bg-gray-50 rounded-xl p-8 hover:bg-gray-100 transition-all duration-300 transform hover:-translate-y-1"
-            >
-              <div className="text-4xl mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
-            </div>
+            <FadeInSection key={index} delay={index * 200}>
+              <div className="bg-gray-50 rounded-xl p-8 hover:bg-gray-100 transition-all duration-300 transform hover:-translate-y-1">
+                <div className="text-4xl mb-4">{feature.icon}</div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </div>
+            </FadeInSection>
           ))}
         </div>
 
-        {/* Values Section */}
         <div className="bg-gray-50 rounded-2xl p-8 md:p-12">
           <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">
             Our Core Values
@@ -405,19 +416,17 @@ function About() {
                 description: "We believe in continuous learning and improvement in everything we do."
               }
             ].map((value, index) => (
-              <div 
-                key={index}
-                className="bg-white rounded-xl p-6 hover:shadow-lg transition-all duration-300"
-              >
-                <div className="text-3xl mb-4">{value.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{value.title}</h3>
-                <p className="text-gray-600">{value.description}</p>
-              </div>
+              <FadeInSection key={index} delay={index * 200}>
+                <div className="bg-white rounded-xl p-6 hover:shadow-lg transition-all duration-300">
+                  <div className="text-3xl mb-4">{value.icon}</div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{value.title}</h3>
+                  <p className="text-gray-600">{value.description}</p>
+                </div>
+              </FadeInSection>
             ))}
           </div>
         </div>
 
-        {/* Vision Statement */}
         <div className="text-center mt-20">
           <h3 className="text-2xl font-bold text-gray-900 mb-4">
             Our Vision
@@ -522,12 +531,22 @@ export default function Home() {
       <Navigation />
       <main className="flex-grow">
         <Hero />
-        <About />
-        <Features />
-        <Pricing />
-        <CallToAction />
+        <FadeInSection>
+          <About />
+        </FadeInSection>
+        <FadeInSection>
+          <Features />
+        </FadeInSection>
+        <FadeInSection>
+          <Pricing />
+        </FadeInSection>
+        <FadeInSection>
+          <CallToAction />
+        </FadeInSection>
       </main>
-      <Footer />
+      <FadeInSection>
+        <Footer />
+      </FadeInSection>
     </div>
   );
 }
