@@ -45,7 +45,7 @@ function Navigation() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {['features', 'pricing', 'about'].map((item) => (
+            {['features', 'about'].map((item) => (
               <button 
                 key={item}
                 onClick={() => scrollToSection(item)} 
@@ -71,7 +71,7 @@ function Navigation() {
                 transition-all duration-300 transform hover:scale-105 hover:shadow-lg 
                 active:scale-95 font-medium"
             >
-              Get Start for Free
+              Get Started for Free
             </Link>
           </div>
 
@@ -107,7 +107,7 @@ function Navigation() {
           }`}
         >
           <div className="py-4 space-y-3 bg-white">
-            {['features', 'pricing', 'about'].map((item) => (
+            {['features', 'about'].map((item) => (
               <button 
                 key={item}
                 onClick={() => scrollToSection(item)} 
@@ -130,7 +130,7 @@ function Navigation() {
                 hover:bg-blue-700 transition-all duration-300 text-center font-medium 
                 hover:shadow-lg active:scale-95"
             >
-              Get Start for Free
+              Get Started for Free
             </Link>
           </div>
         </div>
@@ -238,7 +238,7 @@ function Features() {
     <section id="features" className="py-16 bg-white px-4">
       <div className="max-w-7xl mx-auto">
         <FadeInSection>
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
             Everything you need to manage projects effectively
           </h2>
         </FadeInSection>
@@ -251,91 +251,8 @@ function Features() {
                     {feature.icon}
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
-              </div>
-            </FadeInSection>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Pricing() {
-  const plans = [
-    {
-      name: "Free",
-      price: "$0",
-      description: "Perfect for small teams just getting started",
-      features: [
-        "Up to 5 team members",
-        "Basic project management",
-        "Task tracking",
-        "2GB storage",
-        "Email support"
-      ]
-    },
-    {
-      name: "Pro",
-      price: "$29",
-      description: "Great for growing teams with more needs",
-      features: [
-        "Up to 20 team members",
-        "Advanced project management",
-        "Time tracking",
-        "20GB storage",
-        "Priority support",
-        "Custom workflows",
-        "Advanced analytics"
-      ]
-    },
-    {
-      name: "Enterprise",
-      price: "Custom",
-      description: "For large organizations with specific requirements",
-      features: [
-        "Unlimited team members",
-        "Enterprise-grade security",
-        "Custom integrations",
-        "Unlimited storage",
-        "24/7 dedicated support",
-        "SLA guarantee",
-        "Custom training"
-      ]
-    }
-  ];
-
-  return (
-    <section id="pricing" className="py-16 px-4 bg-gray-50">
-      <div className="max-w-7xl mx-auto">
-        <FadeInSection>
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            Simple, Transparent Pricing
-          </h2>
-        </FadeInSection>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {plans.map((plan, index) => (
-            <FadeInSection key={index} delay={index * 200}>
-              <div className="bg-white p-8 rounded-xl shadow-lg">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                <div className="text-4xl font-bold text-blue-600 mb-4">{plan.price}</div>
-                <p className="text-gray-600 mb-6">{plan.description}</p>
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-center text-gray-600">
-                      <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                      </svg>
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/signup">
-                  <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                    Get Started
-                  </button>
-                </Link>
               </div>
             </FadeInSection>
           ))}
@@ -347,94 +264,81 @@ function Pricing() {
 
 function About() {
   return (
-    <section id="about" className="py-20 px-4 bg-white">
+    <section id="about" className="py-24 px-4 bg-gradient-to-b from-white to-gray-50">
       <div className="max-w-7xl mx-auto">
         <FadeInSection>
-          <div className="text-center mb-16">
-            <div className="inline-block mb-4">
-              <span className="bg-blue-50 text-blue-600 text-sm font-medium px-4 py-1.5 rounded-full">
+          <div className="text-center mb-20">
+            <div className="inline-block mb-4 transform hover:scale-105 transition-transform duration-300">
+              <span className="bg-blue-50 text-blue-600 text-sm font-medium px-6 py-2 rounded-full">
                 About CollabFlow
               </span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-              Built for Modern Teams Who Value Efficiency
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-8 tracking-tight">
+              Streamlined Project<br />Management for Teams
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              CollabFlow was created with a simple mission: to make project management 
-              accessible and efficient for teams of all sizes.
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              An affordable, user-friendly platform designed specifically for startups, small companies, 
+              and student teams who need structured collaboration without complexity.
             </p>
           </div>
         </FadeInSection>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-          {[
-            {
-              icon: "⚡️",
-              title: "User-Centric Design",
-              description: "Intuitive interface that requires minimal training, designed with the user's needs in mind."
-            },
-            {
-              icon: "🛡️",
-              title: "Secure Platform",
-              description: "Built with security in mind, ensuring your project data remains protected and private."
-            },
-            {
-              icon: "🤝",
-              title: "Collaborative Focus",
-              description: "Enhanced team collaboration tools to keep everyone aligned and productive."
-            }
-          ].map((feature, index) => (
-            <FadeInSection key={index} delay={index * 200}>
-              <div className="bg-gray-50 rounded-xl p-8 hover:bg-gray-100 transition-all duration-300 transform hover:-translate-y-1">
-                <div className="text-4xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </div>
-            </FadeInSection>
-          ))}
-        </div>
-
-        <div className="bg-gray-50 rounded-2xl p-8 md:p-12">
-          <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">
-            Our Core Values
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                icon: "🎯",
-                title: "Mission-Driven",
-                description: "We're committed to making work easier and more efficient for teams worldwide."
-              },
-              {
-                icon: "💡",
-                title: "Innovation First",
-                description: "Constantly evolving our platform with cutting-edge features and improvements."
-              },
-              {
-                icon: "🌱",
-                title: "Growth Mindset",
-                description: "We believe in continuous learning and improvement in everything we do."
-              }
-            ].map((value, index) => (
-              <FadeInSection key={index} delay={index * 200}>
-                <div className="bg-white rounded-xl p-6 hover:shadow-lg transition-all duration-300">
-                  <div className="text-3xl mb-4">{value.icon}</div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{value.title}</h3>
-                  <p className="text-gray-600">{value.description}</p>
+        <div className="max-w-4xl mx-auto">
+          <FadeInSection>
+            <div className="space-y-24">
+              {/* Improve Collaboration */}
+              <div className="group transform hover:translate-x-1 transition-transform duration-300">
+                <div className="flex flex-col space-y-6">
+                  <h3 className="text-4xl font-bold bg-gradient-to-r from-[#40A9FF] to-[#9333EA] text-transparent bg-clip-text 
+                    group-hover:scale-[1.02] transition-transform duration-300">
+                    Improve collaboration
+                  </h3>
+                  <p className="text-lg text-gray-700 leading-relaxed max-w-3xl">
+                    Consolidate tasks, deadlines, and team communication in one place. 
+                    Our platform helps small teams avoid the complexity of enterprise solutions 
+                    while maintaining professional project management standards.
+                  </p>
+                  <div className="flex flex-wrap gap-3 pt-2">
+                    {['Task Management', 'Team Communication', 'Progress Tracking'].map((tag, index) => (
+                      <span key={index} 
+                        className="px-5 py-2.5 bg-white shadow-sm border border-gray-100 rounded-full text-gray-700
+                        hover:border-blue-200 hover:bg-blue-50 transition-colors duration-300 cursor-default">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </FadeInSection>
-            ))}
-          </div>
-        </div>
+              </div>
 
-        <div className="text-center mt-20">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">
-            Our Vision
-          </h3>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            To revolutionize how teams collaborate and manage projects, making it 
-            simpler and more efficient for everyone to achieve their goals together.
-          </p>
+              {/* Enhance Visibility */}
+              <div className="group transform hover:translate-x-1 transition-transform duration-300">
+                <div className="flex flex-col space-y-6">
+                  <h3 className="text-4xl font-bold text-[#B8A8E3] group-hover:scale-[1.02] transition-transform duration-300">
+                    Enhance visibility
+                  </h3>
+                  <p className="text-lg text-gray-700 leading-relaxed max-w-3xl">
+                    Give managers clear insights into workflows and resource allocation without heavy 
+                    administrative overhead. Track progress, identify bottlenecks, and make data-driven 
+                    decisions with essential reporting functions.
+                  </p>
+                </div>
+              </div>
+
+              {/* Real-time Updates */}
+              <div className="group transform hover:translate-x-1 transition-transform duration-300">
+                <div className="flex flex-col space-y-6">
+                  <h3 className="text-4xl font-bold text-[#D8CCF6] group-hover:scale-[1.02] transition-transform duration-300">
+                    Real-time updates
+                  </h3>
+                  <p className="text-lg text-gray-700 leading-relaxed max-w-3xl">
+                    Keep everyone aligned with role-based access and real-time notifications. 
+                    Avoid miscommunication and duplicated work by centralizing project information 
+                    and updates in a single, accessible platform.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </FadeInSection>
         </div>
       </div>
     </section>
@@ -443,21 +347,26 @@ function About() {
 
 function CallToAction() {
   return (
-    <section className="py-16 px-4 bg-blue-600">
-      <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-3xl font-bold text-white mb-6">
-          Ready to streamline your project management?
-        </h2>
-        <p className="text-xl text-blue-100 mb-8">
-          Join thousands of teams already using CollabFlow to manage their projects effectively.
-        </p>
-        <Link href="/signup">
-          <button className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition">
-            Get Started for Free
-          </button>
-        </Link>
-      </div>
-    </section>
+    <div className="px-4 py-16">
+      <section className="max-w-6xl mx-auto bg-black relative overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 bg-gradient-to-tr from-purple-900/50 to-transparent"></div>
+        <div className="max-w-4xl mx-auto text-center relative z-10 py-16 px-4">
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+            Transform Your Team's<br />
+            Workflow Today
+          </h2>
+          <p className="text-xl text-gray-300 mb-8">
+            Join thousands of teams already using CollabFlow to streamline their projects, 
+            enhance collaboration, and boost productivity across all departments.
+          </p>
+          <Link href="/signup">
+            <button className="px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-300">
+              Start Your Free Trial
+            </button>
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 }
 
@@ -536,9 +445,6 @@ export default function Home() {
         </FadeInSection>
         <FadeInSection>
           <Features />
-        </FadeInSection>
-        <FadeInSection>
-          <Pricing />
         </FadeInSection>
         <FadeInSection>
           <CallToAction />

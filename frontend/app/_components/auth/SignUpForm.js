@@ -29,7 +29,7 @@ export default function SignUpForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-transparent py-12 px-4 sm:px-6 lg:px-8">
+    <div className="h-[calc(100vh-80px)] flex items-center justify-center bg-transparent px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-[400px] space-y-6">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>

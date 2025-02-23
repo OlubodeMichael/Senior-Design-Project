@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export default function SignUpPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50">
+    <div className="h-screen overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50 select-none">
       {/* Background decorative elements */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute -left-10 -top-10 w-48 sm:w-64 h-48 sm:h-64 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
