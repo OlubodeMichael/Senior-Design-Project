@@ -159,7 +159,7 @@ function Hero() {
                   Get Started
                 </button>
               </Link>
-              <Link href="/demo" className="w-full sm:w-auto">
+              <Link href="/dashboard" className="w-full sm:w-auto">
                 <button className="w-full sm:w-auto px-6 sm:px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-lg 
                   hover:border-blue-600 hover:text-blue-600 transition-all duration-300 font-medium text-sm sm:text-base">
                   Try for Free
