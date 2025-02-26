@@ -125,7 +125,7 @@ export default function LoginForm() {
             >
               <img
                 className="h-5 w-5"
-                src="https://www.svgrepo.com/show/448234/github.svg"
+                src="https://www.svgrepo.com/show/512317/github-142.svg"
                 alt="GitHub logo"
               />
               <span className="ml-2">GitHub</span>
