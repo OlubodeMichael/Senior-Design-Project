@@ -38,9 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'corsheaders',
     'projects',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -57,6 +64,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "https://projmanagementapp.com",
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -85,14 +94,13 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'project_db',          # Your database name
-        'USER': 'ikennan',        # Your PostgreSQL username
-        'PASSWORD': 'password1',    # Your PostgreSQL password
-        'HOST': 'localhost',           # Default for local development
-        'PORT': '5432',                # Default PostgreSQL port
+        'NAME': 'project_db',          
+        'USER': 'ikennan',        
+        'PASSWORD': 'password1',   
+        'HOST': 'localhost',          
+        'PORT': '5432',                
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
