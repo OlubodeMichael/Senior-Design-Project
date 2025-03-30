@@ -37,3 +37,13 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = ['id', 'title', 'description', 'status', 'priority', 'assignee', 'project', 'created_at', 'updated_at', 'due_date']
         read_only_fields = ['created_at', 'updated_at', 'project']
+
+    def validate_assignee(self, value):
+        """Ensure assignee is either null or a project member."""
+        project = self.instance.project if self.instance else self.context['request'].data.get('project')
+
+        if value is not None:
+            if not ProjectMembership.objects.filter(project=project, user=value).exists():
+                raise serializers.ValidationError("Assignee must be a member of the project.")
+
+        return value

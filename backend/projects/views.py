@@ -14,7 +14,9 @@ class ProjectListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(owner=self.request.user)
+        user = self.request.user
+        project = serializer.save(owner=user)
+        ProjectMembership.objects.create(user=user, project=project, role='owner')
 
 class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Project.objects.all()
@@ -131,4 +133,3 @@ class ProjectMembershipDetailView(APIView):
 
         membership.delete()
         return Response({'detail': 'User removed from project.'}, status=status.HTTP_204_NO_CONTENT)
-
