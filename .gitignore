@@ -56,3 +56,11 @@ build/
 .env.local
 .env.development
 .env.production
+
+__pycache__/
+*.pyc
+*.pyo
+
+migrations/__pycache__/
+migrations/*.pyc
+migrations/*.pyo
