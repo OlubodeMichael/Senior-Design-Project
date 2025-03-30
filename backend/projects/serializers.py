@@ -11,12 +11,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class ProjectMembershipSerializer(serializers.ModelSerializer):
-    """Serialize project memberships with role information."""
-    user = UserSerializer(read_only=True)
-
+    user = serializers.StringRelatedField(read_only=True)
+    user_id = serializers.ReadOnlyField(source='user.id')
+    user_email = serializers.ReadOnlyField(source='user.email')
+    
     class Meta:
         model = ProjectMembership
-        fields = ['user', 'role', 'date_joined']
+        fields = ['user', 'user_email', 'user_id', 'role', 'joined_at']
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -29,14 +30,10 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'owner', 'members', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
 
-
 class TaskSerializer(serializers.ModelSerializer):
-    """Serialize tasks with nested assignee and project."""
-    project = serializers.PrimaryKeyRelatedField(queryset=Project.objects.all())
-    assignee = UserSerializer(read_only=True)
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Task
-        fields = ['id', 'title', 'description', 'status', 'project', 'assignee', 'created_at', 'updated_at']
-        read_only_fields = ['created_at', 'updated_at']
-
+        fields = ['id', 'title', 'description', 'status', 'priority', 'assignee', 'project', 'created_at', 'updated_at', 'due_date']
+        read_only_fields = ['created_at', 'updated_at', 'project']
