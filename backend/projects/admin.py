@@ -9,7 +9,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_filter = ('created_at', 'updated_at')
 
     def get_owner(self, obj):
-        return obj.owner.username
+        return obj.owner.username if obj.owner else 'None'
     get_owner.short_description = 'Owner'
 
 # Task Admin
@@ -20,7 +20,7 @@ class TaskAdmin(admin.ModelAdmin):
     list_filter = ('status', 'created_at')
 
     def get_assignee(self, obj):
-        return obj.assignee.username
+        return obj.assignee.username if obj.assignee else 'None'
     get_assignee.short_description = 'Assignee'
 
 # Project Membership Admin
