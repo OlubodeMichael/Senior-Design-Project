@@ -133,4 +133,3 @@ class ProjectMembershipDetailView(APIView):
 
         membership.delete()
         return Response({'detail': 'User removed from project.'}, status=status.HTTP_204_NO_CONTENT)
-
