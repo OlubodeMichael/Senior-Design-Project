@@ -136,36 +136,6 @@ export default function SignUpForm() {
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 text-gray-500">Or continue with</span>
-            </div>
-          </div>
-
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              className="w-full inline-flex justify-center py-2.5 px-4 rounded-lg border border-gray-300 
-                bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-            >
-              <img
-                className="h-5 w-5"
-                src="https://www.svgrepo.com/show/475656/google-color.svg"
-                alt="Google logo"
-              />
-              <span className="ml-2">Google</span>
-            </button>
-            <button
-              type="button"
-              className="w-full inline-flex justify-center py-2.5 px-4 rounded-lg border border-gray-300 
-                bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-            >
-              <img
-                className="h-5 w-5"
-                src="https://www.svgrepo.com/show/512317/github-142.svg"
-                alt="GitHub logo"
-              />
-              <span className="ml-2">GitHub</span>
-            </button>
           </div>
         </div>
       </div>
