@@ -46,7 +46,13 @@ next-env.d.ts
 node_modules/
 **/node_modules/
 
+# Build files
+.next/
+dist/
+build/
+
 # Environment variables
+.env
 .env.local
 .env.development
 .env.production
