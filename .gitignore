@@ -41,3 +41,18 @@ backend/env
 *.tsbuildinfo
 next-env.d.ts
 .env
+
+# Node modules
+node_modules/
+**/node_modules/
+
+# Build files
+.next/
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
