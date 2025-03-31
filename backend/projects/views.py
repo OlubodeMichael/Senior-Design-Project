@@ -7,6 +7,8 @@ from .models import Project, Task, ProjectMembership
 from .serializers import ProjectSerializer, TaskSerializer, ProjectMembershipSerializer, UserRegistrationSerializer
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 # SIGNUP, LOGIN, LOGOUT VIEWS
 class UserRegistrationView(generics.CreateAPIView):
@@ -19,7 +21,7 @@ class UserRegistrationView(generics.CreateAPIView):
         """Save user and log them in immediately."""
         user = serializer.save()
         login(self.request, user)
-        return Response({"message": "User registered and logged in!"}, status=status.HTTP_201_CREATED)
+        return Response({"message": "User registered"}, status=status.HTTP_201_CREATED)
 
 class LoginView(APIView):
     """Session-based login API."""
@@ -37,9 +39,10 @@ class LogoutView(APIView):
     """Session-based logout API."""
     def post(self, request):
         logout(request)
-        return Response({"message": "Logged out!"}, status=status.HTTP_200_OK)
+        return Response({"message": "Log out successful"}, status=status.HTTP_200_OK)
     
 # PROJECT VIEWS
+@method_decorator(csrf_exempt, name='dispatch')
 class ProjectListCreateView(generics.ListCreateAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
