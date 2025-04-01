@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthProvider';
+import { ArrowRightOnRectangleIcon as LogoutIcon } from '@heroicons/react/24/outline';
 
 function SideMenu({ isOpen }) {
     const { logout } = useAuth()
@@ -36,7 +37,7 @@ function SideMenu({ isOpen }) {
             )
         },
         {
-            name: 'Tasks',
+            name: 'My Tasks List',
             href: '/dashboard/tasks',
             icon: (
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,78 +73,109 @@ function SideMenu({ isOpen }) {
     ];
 
     return (
-        <div className={`
-            ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
-            transform transition-transform duration-300 ease-in-out 
-            fixed
-            sm:w-48 w-20 h-screen bg-white border-r border-gray-200 
-            flex flex-col z-40
-        `}>
-            {/* Logo Section */}
-            <div className="p-6">
-                <Link href="/dashboard" className="flex items-center">
-                    <span className="text-xl sm:text-2xl font-bold text-blue-600 truncate">
-                        <span className="sm:block hidden">CollabFlow</span>
-                        <span className="sm:hidden block">CF</span>
-                    </span>
-                </Link>
-            </div>
-
-            {/* Navigation Section */}
-            <nav className="flex-1 px-2 sm:px-4 space-y-1 overflow-y-auto">
-                {menuItems.map((item) => {
-                    const isActive = pathname === item.href;
-                    return (
-                        <Link
-                            key={item.name}
-                            href={item.href}
-                            className={`flex items-center px-3 sm:px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 
-                                ${isActive 
-                                    ? 'bg-blue-50 text-blue-600' 
-                                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                }`}
-                        >
-                            {item.icon}
-                            <span className="ml-3 hidden sm:block">{item.name}</span>
-                        </Link>
-                    );
-                })}
-            </nav>
-
-            {/* User Section */}
-            <div className="p-4 border-t border-gray-200">
-                <div className="flex flex-col items-center sm:items-start sm:flex-row sm:space-x-4 px-3 sm:px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors duration-150">
-                    <div className="flex-shrink-0">
-                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                            <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" 
-                                />
-                            </svg>
-                        </div>
-                    </div>
-                    <div className="flex-1 min-w-0 mt-3 sm:mt-0 text-center sm:text-left">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                            user@example.com
-                        </p>
-                        <p className="text-xs text-gray-500 truncate">
-                            User Name
-                        </p>
-                    </div>
+        <>
+            {/* Side Menu */}
+            <div className={`
+                ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
+                transform transition-transform duration-300 ease-in-out 
+                fixed inset-y-0 left-0
+                xs:w-16 sm:w-48 w-20 h-screen bg-white border-r border-gray-200 
+                flex flex-col z-40 shadow-md
+            `}>
+                {/* Logo Section */}
+                <div className="p-4 sm:p-6 border-b border-gray-200 flex justify-center sm:justify-start">
+                    <Link href="/dashboard" className="flex items-center">
+                        <span className="text-xl sm:text-2xl font-bold text-blue-600 truncate">
+                            <span className="sm:block hidden">CollabFlow</span>
+                            <span className="sm:hidden block">CF</span>
+                        </span>
+                    </Link>
                 </div>
-                <div className="mt-4 px-3 sm:px-4">
+
+                {/* Navigation Section - Updated active item detection */}
+                <nav className="flex-1 px-2 sm:px-4 space-y-1 overflow-y-auto py-4">
+                    {menuItems.map((item) => {
+                        // Improved active state detection
+                        let isActive = false;
+                        
+                        // Exact match for dashboard home
+                        if (item.href === '/dashboard' && pathname === '/dashboard') {
+                            isActive = true;
+                        }
+                        // For other routes, check if current path matches or starts with item path
+                        // but exclude other items that might have overlapping paths
+                        else if (item.href !== '/dashboard') {
+                            const pathSegments = pathname.split('/').filter(Boolean);
+                            const itemSegments = item.href.split('/').filter(Boolean);
+                            
+                            // Check if the current path exactly matches the item path
+                            // or if it's a subpage (like /dashboard/projects/1 should highlight "Projects")
+                            if (pathSegments.length >= itemSegments.length) {
+                                // Check if all segments of the item path match the beginning of the current path
+                                const allSegmentsMatch = itemSegments.every((segment, index) => 
+                                    segment === pathSegments[index]
+                                );
+                                
+                                isActive = allSegmentsMatch;
+                            }
+                        }
+
+                        return (
+                            <Link
+                                key={item.name}
+                                href={item.href}
+                                className={`flex items-center justify-center sm:justify-start px-3 sm:px-4 py-3 text-sm font-medium rounded-lg transition-colors duration-150 
+                                    ${isActive 
+                                        ? 'bg-blue-50 text-blue-600  border-blue-600' 
+                                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 border-l-4 border-transparent'
+                                    }`}
+                                title={item.name}
+                            >
+                                <span className={`flex-shrink-0 w-5 h-5 ${isActive ? 'text-blue-600' : ''}`}>
+                                    {item.icon}
+                                </span>
+                                <span className="ml-3 hidden sm:block">{item.name}</span>
+                            </Link>
+                        );
+                    })}
+                </nav>
+
+                {/* User Section */}
+                <div className="p-4 border-t border-gray-200">
+                    <Link href="/dashboard/settings" className="block mb-4 group">
+                        <div className="flex flex-col items-center sm:items-start sm:flex-row sm:space-x-4 px-3 py-2 rounded-lg group-hover:bg-gray-50 transition-colors duration-150">
+                            <div className="flex-shrink-0">
+                                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" 
+                                        />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div className="flex-1 min-w-0 mt-2 sm:mt-0 text-center sm:text-left hidden sm:block">
+                                <p className="text-sm font-medium text-gray-900 truncate">
+                                    user@example.com
+                                </p>
+                                <p className="text-xs text-gray-500 truncate">
+                                    User Name
+                                </p>
+                            </div>
+                        </div>
+                    </Link>
+                    
                     <button
                         onClick={handleLogout}
-                        className="group flex items-center w-full px-2 py-2 text-sm font-medium text-red-700 rounded-md hover:bg-red-50 transition-colors duration-150"
+                        className="group flex items-center justify-center sm:justify-start w-full px-3 sm:px-4 py-2 text-sm font-medium text-red-600 rounded-md hover:bg-red-50 transition-colors duration-150"
+                        title="Logout"
                     >
-                        <svg className="mr-3 h-5 w-5 text-red-400 group-hover:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                        Logout
+                        <LogoutIcon className="flex-shrink-0 h-5 w-5 text-red-500 group-hover:text-red-600" />
+                        <span className="ml-3 hidden sm:block">Logout</span>
                     </button>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
+
 export default SideMenu;

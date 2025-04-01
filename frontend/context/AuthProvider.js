@@ -22,9 +22,11 @@ function AuthProvider({ children}) {
       return null;
     }
 
+    const api_url = process.env.DJANGO_API || "http://127.0.0.1:8000";
+
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/users/me", {
+        const res = await fetch(`${api_url}/api/users/me`, {
           credentials: "include",
         });
   
@@ -47,7 +49,7 @@ function AuthProvider({ children}) {
     const signup = async ({ userName, email, password}) => {
       const csrfToken = getCSRFToken();
       try {
-        const res = await fetch("http://localhost:8000/api/users/signup", {
+        const res = await fetch(`${api_url}/api/users/signup`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -80,7 +82,7 @@ function AuthProvider({ children}) {
     const login = async ({ email, password }) => {
       const csrfToken = getCSRFToken();
       try {
-        const res = await fetch("http://localhost:8000/api/users/login", {
+        const res = await fetch(`${api_url}/api/users/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -102,9 +104,10 @@ function AuthProvider({ children}) {
     };
 
     const logout = async () => {
+      console.log("testing api endpoint")
       const csrfToken = getCSRFToken();
       try {
-        const res = await fetch("http://localhost:8000/api/users/logout", {
+        const res = await fetch(`${api_url}/api/users/logout`, {
           method: "POST",
           headers: {
             "X-CSRFToken": csrfToken,
