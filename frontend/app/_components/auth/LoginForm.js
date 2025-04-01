@@ -4,8 +4,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import PasswordInput from './PasswordInput';
 import TextInput from '@/app/_components/TextInput';
+import { useAuth } from '@/context/AuthProvider';
 
 export default function LoginForm() {
+  const { login } = useAuth()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -19,10 +21,20 @@ export default function LoginForm() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
-    // Form submission logic will be added later
+    
+    try {
+      await login({
+        email: formData.email,
+        password: formData.password
+      })
+    } catch(err) {
+      console.error(err)
+    } finally {
+      setFormData({ email: '', password: ''})
+    }
   };
 
   return (

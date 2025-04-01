@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react";
+import { useAuth } from "@/context/AuthProvider";
 import SideMenu from "@/app/_components/dashboard/SideMenu";
 
 export default function DashboardLayout({ children }) {
