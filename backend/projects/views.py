@@ -2,12 +2,47 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 from .models import Project, Task, ProjectMembership
-from .serializers import ProjectSerializer, TaskSerializer, ProjectMembershipSerializer
+from .serializers import ProjectSerializer, TaskSerializer, ProjectMembershipSerializer, UserRegistrationSerializer
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
+# SIGNUP, LOGIN, LOGOUT VIEWS
+class UserRegistrationView(generics.CreateAPIView):
+    """API endpoint for user registration with session-based login."""
+    queryset = User.objects.all()
+    serializer_class = UserRegistrationSerializer
+    permission_classes = [AllowAny]
 
+    def perform_create(self, serializer):
+        """Save user and log them in immediately."""
+        user = serializer.save()
+        login(self.request, user)
+        return Response({"message": "User registered"}, status=status.HTTP_201_CREATED)
+
+class LoginView(APIView):
+    """Session-based login API."""
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(request, username=username, password=password)
+        
+        if user:
+            login(request, user)
+            return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+  
+class LogoutView(APIView):
+    """Session-based logout API."""
+    def post(self, request):
+        logout(request)
+        return Response({"message": "Log out successful"}, status=status.HTTP_200_OK)
+    
 # PROJECT VIEWS
+@method_decorator(csrf_exempt, name='dispatch')
 class ProjectListCreateView(generics.ListCreateAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
