@@ -15,9 +15,9 @@ function Projects() {
     });
 
     const sampleProjects = [
-        { id: 1, name: 'Website Redesign', status: 'In Progress', deadline: '2024-04-30' },
-        { id: 2, name: 'Mobile App Development', status: 'Planning', deadline: '2024-05-15' },
-        { id: 3, name: 'Database Migration', status: 'Completed', deadline: '2024-04-10' },
+        { id: 1, name: 'Website Redesign', status: 'In Progress', deadline: '2024-04-30', tasks: [] },
+        { id: 2, name: 'Mobile App Development', status: 'Planning', deadline: '2024-05-15', tasks: [] },
+        { id: 3, name: 'Database Migration', status: 'Completed', deadline: '2024-04-10', tasks: [] },
     ];
 
     useEffect(() => {
@@ -27,11 +27,13 @@ function Projects() {
             if (saved) {
                 // If projects exist in localStorage, use them
                 const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed)) {
-                    setProjects(parsed);
+                // Ensure tasks array exists for older projects
+                const projectsWithTasks = parsed.map(p => ({ ...p, tasks: p.tasks || [] }));
+                if (Array.isArray(projectsWithTasks)) {
+                    setProjects(projectsWithTasks);
                 } else {
                     console.warn("Invalid data in localStorage");
-                    setProjects([]);
+                    setProjects([]); // Reset to empty array if invalid
                 }
             } else {
                 // Only set sample projects if localStorage is completely empty
@@ -40,7 +42,7 @@ function Projects() {
             }
         } catch (err) {
             console.error("Error reading localStorage:", err);
-            setProjects([]);
+            setProjects([]); // Reset on error
         } finally {
             setIsLoading(false);
         }
@@ -48,10 +50,11 @@ function Projects() {
 
     // This useEffect will handle saving changes to localStorage
     useEffect(() => {
-        if (projects.length > 0) {  // Only save if there are projects
+        // Only save if projects state is not the initial empty array during loading
+        if (!isLoading && projects.length >= 0) {
             localStorage.setItem('projects', JSON.stringify(projects));
         }
-    }, [projects]);
+    }, [projects, isLoading]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
