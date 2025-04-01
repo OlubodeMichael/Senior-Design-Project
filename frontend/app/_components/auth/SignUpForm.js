@@ -1,15 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { useAuth } from '@/context/AuthProvider';
 import Link from 'next/link';
 import PasswordInput from './PasswordInput';
 import TextInput from '@/app/_components/TextInput';
 
 // Sign up form
 export default function SignUpForm() {
+  const { signup } = useAuth()
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
+    userName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -23,10 +26,27 @@ export default function SignUpForm() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
     // Form submission logic will be added later
+
+    try {
+      await signup({
+        userName: formData.userName,
+        email: formData.email,
+        password: formData.password
+      })
+    } catch(err) {
+      console.error(err.message)
+    } finally {
+      setFormData({
+        firstName: '', 
+        lastName: '',
+        email: '',
+        password: ''
+      })
+    }
   };
 
   return (
