@@ -10,36 +10,47 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['user_id', 'username', 'email']
+        fields = ['user_id', 'username', 'email', 'first_name', 'last_name']
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    """Serializer for user registration with email and username uniqueness checks."""
-    
+    """Serializer for user registration with email uniqueness and required first & last name."""
+
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['email', 'first_name', 'last_name', 'password']
         extra_kwargs = {
-            'password': {'write_only': True}
+            'password': {'write_only': True},
+            'first_name': {'required': True},
+            'last_name': {'required': True},
         }
 
     def validate_email(self, value):
-        """Check if email is already in use."""
+        """Ensure email is unique."""
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("A user with this email already exists.")
         return value
 
-    def validate_username(self, value):
-        """Check if username is already in use."""
-        if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError("A user with this username already exists.")
-        return value
-
     def create(self, validated_data):
-        """Create a new user, ensuring it's a non-staff, non-superuser."""
+        """Create a user with an auto-generated username."""
+        email = validated_data['email']
+        first_name = validated_data['first_name']
+        last_name = validated_data['last_name']
+        password = validated_data['password']
+
+        username = email.split('@')[0]
+        
+        counter = 1
+        base_username = username
+        while User.objects.filter(username=username).exists():
+            username = f"{base_username}{counter}"
+            counter += 1
+
         user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email'],
-            password=validated_data['password']
+            username=username,
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            password=password
         )
         user.is_staff = False
         user.is_superuser = False
