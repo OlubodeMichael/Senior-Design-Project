@@ -60,7 +60,3 @@ build/
 __pycache__/
 *.pyc
 *.pyo
-
-migrations/__pycache__/
-migrations/*.pyc
-migrations/*.pyo
