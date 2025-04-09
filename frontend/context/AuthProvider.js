@@ -46,7 +46,7 @@ function AuthProvider({ children}) {
       }
     };
     
-    const signup = async ({ userName, email, password}) => {
+    const signup = async ({ first_name, last_name, email, password}) => {
       const csrfToken = getCSRFToken();
       try {
         const res = await fetch(`${api_url}/api/signup/`, {
@@ -56,7 +56,7 @@ function AuthProvider({ children}) {
             "X-CSRFToken": csrfToken,
           },
           credentials: "include",
-          body: JSON.stringify({ userName, email, password}),
+          body: JSON.stringify({ first_name, last_name, email, password}),
         });
   
         if (!res.ok) {
@@ -107,7 +107,7 @@ function AuthProvider({ children}) {
       console.log("testing api endpoint")
       const csrfToken = getCSRFToken();
       try {
-        const res = await fetch(`${api_url}/api/logout`, {
+        const res = await fetch(`${api_url}/api/logout/`, {
           method: "POST",
           headers: {
             "X-CSRFToken": csrfToken,
