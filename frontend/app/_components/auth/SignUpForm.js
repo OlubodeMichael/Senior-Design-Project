@@ -10,9 +10,8 @@ import TextInput from '@/app/_components/TextInput';
 export default function SignUpForm() {
   const { signup } = useAuth()
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    userName: '',
+    first_name: '',
+    last_name: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -33,7 +32,8 @@ export default function SignUpForm() {
 
     try {
       await signup({
-        userName: formData.userName,
+        first_name: formData.first_name,
+        last_name: formData.last_name,
         email: formData.email,
         password: formData.password
       })
@@ -41,8 +41,8 @@ export default function SignUpForm() {
       console.error(err.message)
     } finally {
       setFormData({
-        firstName: '', 
-        lastName: '',
+        first_name: '', 
+        last_name: '',
         email: '',
         password: ''
       })
@@ -66,20 +66,20 @@ export default function SignUpForm() {
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <TextInput
-                id="firstName"
-                name="firstName"
+                id="first_name"
+                name="first_name"
                 label="First name"
-                value={formData.firstName}
+                value={formData.first_name}
                 onChange={handleChange}
                 placeholder="Enter your first name"
                 autoComplete="given-name"
               />
 
               <TextInput
-                id="lastName"
-                name="lastName"
+                id="last_name"
+                name="last_name"
                 label="Last name"
-                value={formData.lastName}
+                value={formData.last_name}
                 onChange={handleChange}
                 placeholder="Enter your last name"
                 autoComplete="family-name"
