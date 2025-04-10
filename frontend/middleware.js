@@ -23,6 +23,15 @@ export async function middleware(req) {
     pathname.startsWith("/signup") ||
     pathname === "/";
 
+  // Check if user is authenticated
+  const isAuthenticated = token && (await verifyJWT(token));
+
+  // If user is authenticated and trying to access login/signup, redirect to dashboard
+  if (isAuthenticated && isPublic) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
+  // For public paths, no need to check authentication
   if (isPublic) {
     return NextResponse.next();
   }
@@ -30,6 +39,8 @@ export async function middleware(req) {
   // No token? Redirect to login
   if (!token) {
     const loginUrl = new URL("/login", req.url);
+    // Store the original URL to redirect back after login
+    loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
@@ -45,7 +56,7 @@ export async function middleware(req) {
   return NextResponse.next();
 }
 
-// Apply only to protected routes
+// Apply middleware to all routes
 export const config = {
-  matcher: ["/dashboard/:path*", "/api/protected/:path*"],
+  matcher: ["/((?!api/public|_next/static|_next/image|favicon.ico).*)"],
 };
