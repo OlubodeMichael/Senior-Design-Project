@@ -1,30 +1,42 @@
+from .models import Project, Task, ProjectMembership
+from .serializers import ProjectSerializer, TaskSerializer, ProjectMembershipSerializer, UserRegistrationSerializer, UserSerializer
+from .utils import generate_jwt
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, logout
+from django.conf import settings
 from django.shortcuts import get_object_or_404
+from datetime import timedelta
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
-from .models import Project, Task, ProjectMembership
-from .serializers import ProjectSerializer, TaskSerializer, ProjectMembershipSerializer, UserRegistrationSerializer, UserSerializer
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
 # USER VIEWS
 class UserRegistrationView(generics.CreateAPIView):
-    """API endpoint for user registration with session-based login."""
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
 
-    def perform_create(self, serializer):
-        """Save user and log them in immediately."""
+    def perform_create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        login(self.request, user)
-        return Response({"message": "User registered"}, status=status.HTTP_201_CREATED)
+
+        jwt_token = generate_jwt(user)
+
+        response = Response({"message": "User registered"}, status=status.HTTP_201_CREATED)
+        response.set_cookie(
+            key='jwt',
+            value=jwt_token,
+            httponly=True,
+            secure=not request._request.is_secure() and not settings.DEBUG,
+            samesite='Lax',
+            max_age=86400  # 1 day
+        )
+        return response
 
 class LoginView(APIView):
-    """Session-based login API."""
+    permission_classes = [AllowAny]
 
     def post(self, request):
         email = request.data.get('email')
@@ -38,18 +50,27 @@ class LoginView(APIView):
 
         user = authenticate(request, username=username, password=password)
 
-        if user:
-            login(request, user)
-            return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
-        
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        if user is None:
+            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
+        jwt_token = generate_jwt(user)
+
+        response = Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+        response.set_cookie(
+            key='jwt',
+            value=jwt_token,
+            httponly=True,
+            secure=not request._request.is_secure() and not settings.DEBUG,
+            samesite='Lax',
+            max_age=86400
+        )
+        return response
+    
 class LogoutView(APIView):
-    """Session-based logout API."""
-
     def post(self, request):
-        logout(request)
-        return Response({"message": "Log out successful"}, status=status.HTTP_200_OK)
+        response = Response({"message": "Log out successful"}, status=status.HTTP_200_OK)
+        response.delete_cookie('jwt')
+        return response
 
 class ProfileView(generics.RetrieveAPIView):
     """API endpoint to get details of the authenticated user."""

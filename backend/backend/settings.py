@@ -48,13 +48,20 @@ INSTALLED_APPS = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'projects.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
 }
 
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SECURE = False
+JWT_COOKIE_NAME = 'jwt'
+JWT_COOKIE_SECURE = not DEBUG
+JWT_COOKIE_SAMESITE = 'Lax'
+JWT_COOKIE_HTTPONLY = True
+JWT_SECRET_KEY = env('JWT_SECRET_KEY')
+JWT_EXPIRATION_TIME = 3600
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -62,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    'projects.middleware.JWTAuthenticationMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
