@@ -9,18 +9,6 @@ function AuthProvider({ children}) {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null)
 
-    const getCSRFToken = () => {
-      const name = "csrftoken=";
-      const cookies = document.cookie.split(";");
-    
-      for (let cookie of cookies) {
-        cookie = cookie.trim();
-        if (cookie.startsWith(name)) {
-          return cookie.substring(name.length);
-        }
-      }
-      return null;
-    }
 
     const api_url = process.env.DJANGO_API || "http://127.0.0.1:8000";
 
@@ -47,13 +35,11 @@ function AuthProvider({ children}) {
     };
     
     const signup = async ({ first_name, last_name, email, password}) => {
-      const csrfToken = getCSRFToken();
       try {
         const res = await fetch(`${api_url}/api/signup/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
           },
           credentials: "include",
           body: JSON.stringify({ first_name, last_name, email, password}),
@@ -80,13 +66,12 @@ function AuthProvider({ children}) {
     };
 
     const login = async ({ email, password }) => {
-      const csrfToken = getCSRFToken();
       try {
         const res = await fetch(`${api_url}/api/login/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": csrfToken,
+    
           },
           credentials: "include",
           body: JSON.stringify({ email, password }),
@@ -105,13 +90,9 @@ function AuthProvider({ children}) {
 
     const logout = async () => {
       console.log("testing api endpoint")
-      const csrfToken = getCSRFToken();
       try {
         const res = await fetch(`${api_url}/api/logout/`, {
           method: "POST",
-          headers: {
-            "X-CSRFToken": csrfToken,
-          },
           credentials: "include"
         });
     

@@ -1,16 +1,23 @@
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Project, Task, ProjectMembership
 from django.contrib.auth.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Serialize basic user details."""
+    """Serialize basic user details along with JWT token."""
 
     user_id = serializers.IntegerField(source='id', read_only=True)
+    token = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['user_id', 'username', 'email', 'first_name', 'last_name']
+        fields = ['user_id', 'username', 'email', 'first_name', 'last_name', 'token']
+
+    def get_token(self, obj):
+        """Generate JWT token for the user."""
+        refresh = RefreshToken.for_user(obj)
+        return str(refresh.access_token)
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """Serializer for user registration with email uniqueness and required first & last name."""
@@ -31,7 +38,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        """Create a user with an auto-generated username."""
+        """Create a user with an auto-generated username and return JWT token."""
         email = validated_data['email']
         first_name = validated_data['first_name']
         last_name = validated_data['last_name']
@@ -55,7 +62,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user.is_staff = False
         user.is_superuser = False
         user.save()
-        return user
+        refresh = RefreshToken.for_user(user)
+        return {'user': user, 'token': str(refresh.access_token)}
 
 
 class ProjectMembershipSerializer(serializers.ModelSerializer):
