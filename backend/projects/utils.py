@@ -11,7 +11,7 @@ def generate_jwt(user):
         # 'exp': datetime.now(datetime.now()) + timedelta(days=1),
         # 'iat': datetime.now(datetime.now())
     }
-    token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
+    token = jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm='HS256')
     return token
 
 
@@ -21,7 +21,7 @@ def get_user_from_jwt(request):
         raise AuthenticationFailed('Unauthenticated')
 
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=['HS256'])
     except jwt.ExpiredSignatureError:
         raise AuthenticationFailed('Token expired')
     except jwt.DecodeError:
