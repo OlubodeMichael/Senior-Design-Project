@@ -9,7 +9,7 @@ class JWTAuthenticationMiddleware(MiddlewareMixin):
 
         if token:
             try:
-                payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+                payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=['HS256'])
                 user = User.objects.get(id=payload['user_id'])
                 request.user = user
             except (jwt.ExpiredSignatureError, jwt.DecodeError, User.DoesNotExist):
