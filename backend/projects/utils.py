@@ -4,7 +4,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework.exceptions import AuthenticationFailed
 
-
 def generate_jwt(user):
     payload = {
         'user_id': user.id,
@@ -14,7 +13,6 @@ def generate_jwt(user):
     token = jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm='HS256')
     return token
 
-
 def get_user_from_jwt(request):
     token = request.COOKIES.get('jwt')
     if not token:
@@ -22,9 +20,9 @@ def get_user_from_jwt(request):
 
     try:
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=['HS256'])
-    except jwt.ExpiredSignatureError:
-        raise AuthenticationFailed('Token expired')
-    except jwt.DecodeError:
-        raise AuthenticationFailed('Invalid token')
-
-    return User.objects.get(id=payload['user_id'])
+        user = User.objects.get(id=payload['user_id'])
+        return user
+    except (jwt.ExpiredSignatureError, jwt.DecodeError):
+        raise AuthenticationFailed('Invalid or expired token')
+    except User.DoesNotExist:
+        raise AuthenticationFailed('User does not exist')

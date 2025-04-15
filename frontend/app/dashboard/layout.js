@@ -2,13 +2,21 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthProvider";
+import { useProject } from "@/context/ProjectProvider";
 import SideMenu from "@/app/_components/dashboard/SideMenu";
 import { Bars3Icon as MenuIcon, XMarkIcon as XIcon } from "@heroicons/react/24/outline";
 
 export default function DashboardLayout({ children }) {
+  const { user } = useAuth()
+  const {  projects } = useProject()
+
+  
+  console.log(user)
+  console.log(projects)
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
+  
   // Handle screen resize
   useEffect(() => {
     // Check if mobile on initial render

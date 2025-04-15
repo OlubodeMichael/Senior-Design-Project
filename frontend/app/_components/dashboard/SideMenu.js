@@ -1,16 +1,18 @@
 "use client"
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthProvider';
 import { ArrowRightOnRectangleIcon as LogoutIcon } from '@heroicons/react/24/outline';
 
 function SideMenu({ isOpen }) {
     const { logout } = useAuth()
+    const router = useRouter()
     const pathname = usePathname();
 
     const handleLogout = async () => {
-        await logout()
+        //await logout()
+        router.push("/login")
     }
     
     const menuItems = [
@@ -155,10 +157,10 @@ function SideMenu({ isOpen }) {
                             </div>
                             <div className="flex-1 min-w-0 mt-2 sm:mt-0 text-center sm:text-left hidden sm:block">
                                 <p className="text-sm font-medium text-gray-900 truncate">
-                                    user@example.com
+                                    ikenna1@email.com
                                 </p>
                                 <p className="text-xs text-gray-500 truncate">
-                                    User Name
+                                    Ikenna 
                                 </p>
                             </div>
                         </div>

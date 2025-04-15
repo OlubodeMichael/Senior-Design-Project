@@ -2,16 +2,17 @@
 import { useState, useEffect } from 'react';
 import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
+import { useProject } from '@/context/ProjectProvider';
 
 function Projects() {
+    const { createProject, projects, isLoading } = useProject()
     const router = useRouter();
-    const [projects, setProjects] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    //const [projects, setProjects] = useState([]);
+   // const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newProject, setNewProject] = useState({
         name: '',
-        status: 'Planning',
-        deadline: ''
+        description: ''
     });
 
     const sampleProjects = [
@@ -20,6 +21,7 @@ function Projects() {
         { id: 3, name: 'Database Migration', status: 'Completed', deadline: '2024-04-10', tasks: [] },
     ];
 
+    /*
     useEffect(() => {
         try {
             const saved = localStorage.getItem('projects');
@@ -47,7 +49,7 @@ function Projects() {
             setIsLoading(false);
         }
     }, []); // Empty dependency array - only run once on mount
-
+*/
     // This useEffect will handle saving changes to localStorage
     useEffect(() => {
         // Only save if projects state is not the initial empty array during loading
@@ -56,20 +58,20 @@ function Projects() {
         }
     }, [projects, isLoading]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const newId = projects.length ? Math.max(...projects.map(p => p.id)) + 1 : 1;
         
-        setProjects([...projects, {
-            id: newId,
-            ...newProject
-        }]);
+        try {
+            await createProject(newProject)
+        } catch(err){
+            console.error("Error create project", err.message)
+        }
+        
         
         // Reset form and close modal
         setNewProject({
             name: '',
-            status: 'Planning',
-            deadline: ''
+        description: ''
         });
         setIsModalOpen(false);
     };
@@ -122,28 +124,13 @@ function Projects() {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Status
-                                </label>
-                                <select
-                                    value={newProject.status}
-                                    onChange={(e) => setNewProject({...newProject, status: e.target.value})}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
-                                >
-                                    <option value="Planning">Planning</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="Completed">Completed</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Deadline
+                                    Description
                                 </label>
                                 <input
-                                    type="date"
+                                    type="text"
                                     required
-                                    value={newProject.deadline}
-                                    onChange={(e) => setNewProject({...newProject, deadline: e.target.value})}
+                                    value={newProject.description}
+                                    onChange={(e) => setNewProject({...newProject, description: e.target.value})}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
                                 />
                             </div>
@@ -184,22 +171,7 @@ function Projects() {
                                 {project.name}
                             </h3>
                             <div className="flex flex-col space-y-2">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-600">Status:</span>
-                                    <span className={`px-2 py-1 rounded-full text-sm font-medium ${
-                                        project.status === 'Completed' ? 'bg-green-100 text-green-800' :
-                                        project.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
-                                        'bg-yellow-100 text-yellow-800'
-                                    }`}>
-                                        {project.status}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-600">Deadline:</span>
-                                    <span className="font-medium text-gray-800">
-                                        {new Date(project.deadline).toLocaleDateString()}
-                                    </span>
-                                </div>
+                               
                                 <button
                                     className="mt-4 w-full px-4 py-2.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-sm sm:text-base"
                                     onClick={() => handleViewProject(project.id)}

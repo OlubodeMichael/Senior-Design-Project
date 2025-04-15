@@ -5,6 +5,10 @@ from django.utils.deprecation import MiddlewareMixin
 
 class JWTAuthenticationMiddleware(MiddlewareMixin):
     def process_request(self, request):
+        public_paths = ['/api/register/', '/api/login/']
+        if request.path in public_paths:
+            return
+        
         token = request.COOKIES.get(settings.JWT_COOKIE_NAME)
 
         if token:
