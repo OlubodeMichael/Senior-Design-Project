@@ -346,7 +346,7 @@ export default function Project({ params }) {
                     project.members.slice(0, 5).map((member, index) => (
                       <div
                         key={index}
-                        className="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-indigo-100 flex items-center justify-center">
+                        className="h-8 w-8 rounded-full ring-2 ring-white bg-indigo-100 flex items-center justify-center">
                         <span className="text-xs font-medium text-indigo-600">
                           {member.user.charAt(0).toUpperCase()}
                         </span>
