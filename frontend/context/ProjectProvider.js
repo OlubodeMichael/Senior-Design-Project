@@ -160,7 +160,7 @@ function ProjectProvider({ children }) {
     setError(null);
     try {
       setIsLoading(true);
-      const res = await fetch(`${api_url}/api/projects/${project_id}/tasks`, {
+      const res = await fetch(`${api_url}/api/projects/${project_id}/tasks/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -168,12 +168,20 @@ function ProjectProvider({ children }) {
         credentials: "include",
       });
 
-      if (!res.ok) throw new Error("Failed to add task to this project");
+      if (!res.ok) {
+        const errorMessage =
+          res.status === 404
+            ? "Project tasks not found"
+            : "Failed to fetch project tasks";
+        throw new Error(errorMessage);
+      }
 
       const data = await res.json();
       setTasks(data);
+      return data;
     } catch (err) {
       setError(err.message);
+      throw err;
     } finally {
       setIsLoading(false);
     }
