@@ -24,11 +24,23 @@ export default function ProjectMembers({ members }) {
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
                     <span className="text-indigo-600 font-medium text-lg">
-                      {member.user.charAt(0).toUpperCase()}
+                      {member.user
+                        ? member.user.charAt(0).toUpperCase()
+                        : member.first_name
+                        ? member.first_name.charAt(0).toUpperCase()
+                        : member.user_email
+                        ? member.user_email.charAt(0).toUpperCase()
+                        : "?"}
                     </span>
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">{member.first_name+" "+member.last_name}</h3>
+                    <h3 className="font-medium text-gray-900">
+                      {member.user_email === "superuser@email.com"
+                        ? "Super User"
+                        : member.first_name && member.last_name
+                        ? `${member.first_name} ${member.last_name}`
+                        : member.user || member.user_email || "Unknown User"}
+                    </h3>
                     <div className="flex items-center text-sm text-gray-500 mt-1">
                       <EnvelopeIcon className="h-4 w-4 mr-1" />
                       <span>{member.user_email || "No email provided"}</span>
@@ -45,12 +57,15 @@ export default function ProjectMembers({ members }) {
                           : "bg-indigo-100 text-indigo-700"
                       }
                     `}>
-                    {member.role}
+                    {member.role || "Member"}
                   </span>
                   <div className="flex items-center text-xs text-gray-500">
                     <CalendarIcon className="h-3 w-3 mr-1" />
                     <span>
-                      Joined {new Date(member.joined_at).toLocaleDateString()}
+                      Joined{" "}
+                      {member.joined_at
+                        ? new Date(member.joined_at).toLocaleDateString()
+                        : "Recently"}
                     </span>
                   </div>
                 </div>
