@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { createContext, useContext, useState, useEffect } from "react";
 
 const ProjectContext = createContext();
@@ -7,41 +7,28 @@ function ProjectProvider({ children }) {
   const [projects, setProjects] = useState([]);
   const [project, setProject] = useState(null);
   const [error, setError] = useState(null);
-  const [tasks, setTasks] = useState(null)
-  const [task, setTask] = useState(null)
+  const [tasks, setTasks] = useState(null);
+  const [task, setTask] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const api_url = process.env.DJANGO_API || "http://127.0.0.1:8000";
 
-  const getCSRFToken = () => {
-    const name = "csrftoken=";
-    const cookies = document.cookie.split(";");
-  
-    for (let cookie of cookies) {
-      cookie = cookie.trim();
-      if (cookie.startsWith(name)) {
-        return cookie.substring(name.length);
-      }
-    }
-    return null;
-  }
-
-  useEffect(()=>{
-    getAllProjects()
-  }, [])
+  useEffect(() => {
+    getAllProjects();
+  }, []);
 
   const getAllProjects = async () => {
     setError(null);
     try {
       setIsLoading(true);
       const res = await fetch(`${api_url}/api/projects`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-           'Content-Type': 'application/json',
-          },
-        credentials: 'include'
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
       });
-      if (!res.ok) throw new Error('Failed to fetch projects');
+      if (!res.ok) throw new Error("Failed to fetch projects");
       const data = await res.json();
       setProjects(data || []);
     } catch (err) {
@@ -53,22 +40,20 @@ function ProjectProvider({ children }) {
   };
 
   const createProject = async (newProject) => {
-    const csrfToken = getCSRFToken()
     setError(null);
     try {
       setIsLoading(true);
       const res = await fetch(`${api_url}/api/projects/`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-           'Content-Type': 'application/json' ,
-           "X-CSRFToken": csrfToken,
-          },
-        credentials: 'include',
-        body: JSON.stringify(newProject)
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(newProject),
       });
       if (!res.ok) throw new Error("Failed to create project");
       const data = await res.json();
-      setProjects(prev => [...prev, data]); // optional: update list
+      setProjects((prev) => [...prev, data]); // optional: update list
     } catch (err) {
       setError(err.message);
     } finally {
@@ -76,19 +61,19 @@ function ProjectProvider({ children }) {
     }
   };
 
-  const getProject = async (project_id ) => {
+  const getProject = async (project_id) => {
     setError(null);
     try {
       setIsLoading(true);
       const res = await fetch(`${api_url}/api/projects/${project_id}/`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include'
+        credentials: "include",
       });
       if (!res.ok) throw new Error("Failed to get project");
-      console.log(res)
+      console.log(res);
       const data = await res.json();
       setProject(data || null);
     } catch (err) {
@@ -100,20 +85,18 @@ function ProjectProvider({ children }) {
   };
 
   const updateProject = async ({ project_id, updatedData }) => {
-    const csrfToken = getCSRFToken()
     setError(null);
     try {
       setIsLoading(true);
       const res = await fetch(`${api_url}/api/projects/${project_id}`, {
-        method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json' ,
-          "X-CSRFToken": csrfToken,
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
-        body: JSON.stringify(updatedData)
+        credentials: "include",
+        body: JSON.stringify(updatedData),
       });
-      if (!res.ok) throw new Error('Failed to update project');
+      if (!res.ok) throw new Error("Failed to update project");
       const data = await res.json();
       setProject(data);
     } catch (err) {
@@ -123,19 +106,19 @@ function ProjectProvider({ children }) {
     }
   };
 
-  const deleteProject = async (project_id ) => {
+  const deleteProject = async (project_id) => {
     setError(null);
     try {
       setIsLoading(true);
       const res = await fetch(`${api_url}/api/projects/${project_id}/`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        credentials: 'include'
+        credentials: "include",
       });
       if (!res.ok) throw new Error("Failed to delete project");
-      setProjects(prev => prev.filter(p => p.id !== project_id));
+      setProjects((prev) => prev.filter((p) => p.id !== project_id));
       setProject(null);
     } catch (err) {
       setError(err.message);
@@ -145,27 +128,25 @@ function ProjectProvider({ children }) {
   };
 
   const addTaskToProject = async ({ project_id, taskData }) => {
-    const csrfToken = getCSRFToken()
     setError(null);
     try {
       setIsLoading(true);
       const res = await fetch(`${api_url}/api/projects/${project_id}/tasks`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          "X-CSRFToken": csrfToken,
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
-        body: JSON.stringify(taskData)
+        credentials: "include",
+        body: JSON.stringify(taskData),
       });
       if (!res.ok) throw new Error("Failed to add task to project");
       const data = await res.json();
       setTask(data);
       // Optionally update the project state with new task
       if (project && project.id === project_id) {
-        setProject(prev => ({
+        setProject((prev) => ({
           ...prev,
-          tasks: [...(prev.tasks || []), data]
+          tasks: [...(prev.tasks || []), data],
         }));
       }
     } catch (err) {
@@ -175,81 +156,83 @@ function ProjectProvider({ children }) {
     }
   };
 
-  const getTasksFromProject = async ({ project_id}) => {
-    setError(null);
-    try{ 
-      setIsLoading(true)
-      const res = await fetch(`${api_url}/api/projects/${project_id}/tasks`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include'
-      })
-
-      if(!res.ok) throw new Error("Failed to add task to this project")
-      
-      const data = await res.json()
-      setTasks(data)
-    } catch(err) {
-      setError(err.message)
-    } finally {
-      setIsLoading(false)
-    }
-
-  }
-
-  const getTaskFromProject = async ({ project_id, task_id}) => {
-    setError(null);
-    try{ 
-      setIsLoading(true)
-      const res = await fetch(`${api_url}/api/projects/${project_id}/tasks/${task_id}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include'
-      })
-
-      if(!res.ok) throw new Error("Failed to add task to this project")
-      
-      const data = await res.json()
-      setTask(data)
-    } catch(err) {
-      setError(err.message)
-    } finally {
-      setIsLoading(false)
-    }
-
-  }
-
-  const updateTask = async ({ project_id, task_id, updatedTask }) => {
-    const csrfToken = getCSRFToken();
+  const getTasksFromProject = async ({ project_id }) => {
     setError(null);
     try {
       setIsLoading(true);
-      const res = await fetch(`${api_url}/api/projects/${project_id}/tasks/${task_id}`, {
-        method: 'PATCH',
+      const res = await fetch(`${api_url}/api/projects/${project_id}/tasks`, {
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          "X-CSRFToken": csrfToken,
+          "Content-Type": "application/json",
         },
-        credentials: 'include',
-        body: JSON.stringify(updatedTask), 
+        credentials: "include",
       });
-  
-      if (!res.ok) throw new Error("Failed to update task in this project");
-  
+
+      if (!res.ok) throw new Error("Failed to add task to this project");
+
+      const data = await res.json();
+      setTasks(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getTaskFromProject = async ({ project_id, task_id }) => {
+    setError(null);
+    try {
+      setIsLoading(true);
+      const res = await fetch(
+        `${api_url}/api/projects/${project_id}/tasks/${task_id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to add task to this project");
+
       const data = await res.json();
       setTask(data);
-  
-      setTasks(prev => prev?.map(t => t.id === data.id ? data : t));
-  
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateTask = async ({ project_id, task_id, updatedTask }) => {
+    setError(null);
+    try {
+      setIsLoading(true);
+      const res = await fetch(
+        `${api_url}/api/projects/${project_id}/tasks/${task_id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(updatedTask),
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to update task in this project");
+
+      const data = await res.json();
+      setTask(data);
+
+      setTasks((prev) => prev?.map((t) => (t.id === data.id ? data : t)));
+
       // Optionally update single project if task exists within it
       if (project && project.tasks) {
-        setProject(prev => ({
+        setProject((prev) => ({
           ...prev,
-          tasks: prev.tasks.map(t => t.id === data.id ? data : t)
+          tasks: prev.tasks.map((t) => (t.id === data.id ? data : t)),
         }));
       }
     } catch (err) {
@@ -258,7 +241,38 @@ function ProjectProvider({ children }) {
       setIsLoading(false);
     }
   };
-  
+
+  const deleteTask = async ({ project_id, task_id }) => {
+    setError(null);
+    try {
+      setIsLoading(true);
+      const res = await fetch(
+        `${api_url}/api/projects/${project_id}/tasks/${task_id}/`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to delete task");
+
+      // Update local state
+      if (project && project.tasks) {
+        setProject((prev) => ({
+          ...prev,
+          tasks: prev.tasks.filter((t) => t.id !== task_id),
+        }));
+      }
+    } catch (err) {
+      setError(err.message);
+      throw err; // Re-throw to handle in the component
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <ProjectContext.Provider
@@ -277,9 +291,9 @@ function ProjectProvider({ children }) {
         addTaskToProject,
         getTasksFromProject,
         getTaskFromProject,
-        updateTask
-      }}
-    >
+        updateTask,
+        deleteTask,
+      }}>
       {children}
     </ProjectContext.Provider>
   );

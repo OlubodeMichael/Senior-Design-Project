@@ -9,9 +9,17 @@ import {
   ClockIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
+import TaskDetailModal from "./TaskDetailModal";
+import { useProject } from "@/context/ProjectProvider";
 
-export default function TaskList({ tasks = [] }) {
+export default function TaskList({ tasks = [], projectId }) {
   const [viewType, setViewType] = useState("list"); // 'list', 'board', or 'table'
+  const [selectedTask, setSelectedTask] = useState(null);
+  const { updateTask, deleteTask, getProject, isLoading } = useProject();
+
+  // Add loading indicator for task operations
+  const [isTaskOperationLoading, setIsTaskOperationLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const getPriorityColor = (priority) => {
     switch (priority) {
@@ -39,12 +47,56 @@ export default function TaskList({ tasks = [] }) {
     }
   };
 
+  const handleTaskClick = (task) => {
+    setSelectedTask(task);
+  };
+
+  const handleUpdateTask = async (updatedTask) => {
+    try {
+      setError(null);
+      setIsTaskOperationLoading(true);
+      await updateTask({
+        project_id: projectId,
+        task_id: updatedTask.id,
+        updatedTask: {
+          ...updatedTask,
+          project: projectId,
+        },
+      });
+      await getProject(projectId);
+      setSelectedTask(null);
+    } catch (error) {
+      console.error("Error updating task:", error);
+      setError("Failed to update task. Please try again.");
+    } finally {
+      setIsTaskOperationLoading(false);
+    }
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    try {
+      setError(null);
+      setIsTaskOperationLoading(true);
+      await deleteTask({
+        project_id: projectId,
+        task_id: taskId,
+      });
+      await getProject(projectId);
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      setError("Failed to delete task. Please try again.");
+    } finally {
+      setIsTaskOperationLoading(false);
+    }
+  };
+
   const renderListView = () => (
     <div className="space-y-4">
       {tasks.map((task) => (
         <div
           key={task.id}
-          className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
+          onClick={() => handleTaskClick(task)}
+          className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow cursor-pointer">
           <div className="flex items-start justify-between">
             <div className="flex items-start space-x-3">
               <div className="mt-1">{getStatusIcon(task.status)}</div>
@@ -81,7 +133,10 @@ export default function TaskList({ tasks = [] }) {
             </h3>
             <div className="space-y-3">
               {statusTasks.map((task) => (
-                <div key={task.id} className="bg-white rounded-lg shadow p-3">
+                <div
+                  key={task.id}
+                  onClick={() => handleTaskClick(task)}
+                  className="bg-white rounded-lg shadow p-3 cursor-pointer hover:shadow-md transition-shadow">
                   <h4 className="font-medium text-gray-900">{task.title}</h4>
                   <p className="text-sm text-gray-500 mt-1 line-clamp-2">
                     {task.description}
@@ -124,7 +179,10 @@ export default function TaskList({ tasks = [] }) {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {tasks.map((task) => (
-            <tr key={task.id} className="hover:bg-gray-50">
+            <tr
+              key={task.id}
+              onClick={() => handleTaskClick(task)}
+              className="hover:bg-gray-50 cursor-pointer">
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
                   {getStatusIcon(task.status)}
@@ -160,6 +218,9 @@ export default function TaskList({ tasks = [] }) {
 
   return (
     <div className="space-y-4">
+      {error && (
+        <div className="bg-red-50 text-red-600 p-3 rounded-md">{error}</div>
+      )}
       <div className="flex justify-between items-center">
         <h2 className="text-lg font-semibold text-gray-900">Tasks</h2>
         <div className="flex space-x-2">
@@ -204,6 +265,16 @@ export default function TaskList({ tasks = [] }) {
           {viewType === "table" && renderTableView()}
         </div>
       )}
+
+      <TaskDetailModal
+        isOpen={!!selectedTask}
+        onClose={() => setSelectedTask(null)}
+        task={selectedTask}
+        onUpdate={handleUpdateTask}
+        onDelete={handleDeleteTask}
+        projectId={projectId}
+        isLoading={isTaskOperationLoading}
+      />
     </div>
   );
 }

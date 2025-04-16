@@ -277,7 +277,7 @@ export default function Project({ params }) {
 
       {/* Tasks Section */}
       <div className="max-w-5xl mx-auto mt-8">
-        <TaskList tasks={project.tasks || []} />
+        <TaskList tasks={project.tasks || []} projectId={projectId} />
       </div>
 
       <TaskModal
