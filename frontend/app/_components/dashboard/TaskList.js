@@ -15,7 +15,7 @@ import { useProject } from "@/context/ProjectProvider";
 export default function TaskList({ tasks=[], projectId }) {
   const [viewType, setViewType] = useState("list"); // 'list', 'board', or 'table'
   const [selectedTask, setSelectedTask] = useState(null);
-  const { updateTask, deleteTask, getProject, getTasksFromProject, isLoading } =
+  const { updateTask, deleteTask, getProject, isLoading } =
     useProject();
 
   // Add loading indicator for task operations
@@ -23,20 +23,7 @@ export default function TaskList({ tasks=[], projectId }) {
   const [error, setError] = useState(null);
 
   // Add useEffect to fetch tasks when component mounts
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        await getTasksFromProject({ project_id: projectId });
-      } catch (error) {
-        console.error("Error fetching tasks:", error);
-        setError("Failed to load tasks. Please try again.");
-      }
-    };
-
-    if (projectId) {
-      fetchTasks();
-    }
-  }, [projectId]);
+  
 
   const getPriorityColor = (priority) => {
     switch (priority) {
