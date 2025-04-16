@@ -168,13 +168,20 @@ function ProjectProvider({ children }) {
         credentials: "include",
       });
 
-      if (!res.ok) throw new Error("Failed to add task to this project");
+      if (!res.ok) {
+        const errorMessage =
+          res.status === 404
+            ? "Project tasks not found"
+            : "Failed to fetch project tasks";
+        throw new Error(errorMessage);
+      }
 
       const data = await res.json();
       setTasks(data);
-      return data
+      return data;
     } catch (err) {
       setError(err.message);
+      throw err;
     } finally {
       setIsLoading(false);
     }
