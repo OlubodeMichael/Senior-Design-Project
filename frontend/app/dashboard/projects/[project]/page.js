@@ -17,7 +17,9 @@ export default function Project({ params }) {
     isLoading,
     getProject,
     deleteProject,
+    tasks,
     addTaskToProject,
+    getTasksFromProject,
     updateProject,
   } = useProject();
   const resolvedParams = use(params);
@@ -28,11 +30,19 @@ export default function Project({ params }) {
   const [editedProject, setEditedProject] = useState(null);
   const [error, setError] = useState(null);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  console.log(tasks)
+  
 
   useEffect(() => {
-    getProject(projectId);
+    const fetchOnLoad =  async () => {
+      await getProject(projectId);
+    }
+
+    fetchOnLoad()
+    
   }, [projectId]);
 
+  //console.log(tasks)
   useEffect(() => {
     if (project) {
       setEditedProject(project);
@@ -277,7 +287,7 @@ export default function Project({ params }) {
 
       {/* Tasks Section */}
       <div className="max-w-5xl mx-auto mt-8">
-        <TaskList tasks={project.tasks || []} projectId={projectId} />
+        { /*<TaskList  projectId={projectId} /> */}
       </div>
 
       <TaskModal

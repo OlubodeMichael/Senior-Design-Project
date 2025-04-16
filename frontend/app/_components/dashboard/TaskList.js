@@ -12,10 +12,10 @@ import {
 import TaskDetailModal from "./TaskDetailModal";
 import { useProject } from "@/context/ProjectProvider";
 
-export default function TaskList({ tasks = [], projectId }) {
+export default function TaskList({ projectId }) {
   const [viewType, setViewType] = useState("list"); // 'list', 'board', or 'table'
   const [selectedTask, setSelectedTask] = useState(null);
-  const { updateTask, deleteTask, getProject, isLoading } = useProject();
+  const { updateTask, deleteTask, getProject, isLoading, tasks } = useProject();
 
   // Add loading indicator for task operations
   const [isTaskOperationLoading, setIsTaskOperationLoading] = useState(false);

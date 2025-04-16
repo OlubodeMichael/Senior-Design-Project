@@ -131,7 +131,7 @@ function ProjectProvider({ children }) {
     setError(null);
     try {
       setIsLoading(true);
-      const res = await fetch(`${api_url}/api/projects/${project_id}/tasks`, {
+      const res = await fetch(`${api_url}/api/projects/${project_id}/tasks/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -160,7 +160,7 @@ function ProjectProvider({ children }) {
     setError(null);
     try {
       setIsLoading(true);
-      const res = await fetch(`${api_url}/api/projects/${project_id}/tasks`, {
+      const res = await fetch(`${api_url}/api/projects/${project_id}/tasks/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -172,6 +172,7 @@ function ProjectProvider({ children }) {
 
       const data = await res.json();
       setTasks(data);
+      return data
     } catch (err) {
       setError(err.message);
     } finally {
