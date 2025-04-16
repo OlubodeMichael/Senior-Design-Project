@@ -73,7 +73,6 @@ function ProjectProvider({ children }) {
         credentials: "include",
       });
       if (!res.ok) throw new Error("Failed to get project");
-      console.log(res);
       const data = await res.json();
       setProject(data || null);
     } catch (err) {
@@ -156,7 +155,7 @@ function ProjectProvider({ children }) {
     }
   };
 
-  const getTasksFromProject = async ({ project_id }) => {
+  const getTasksFromProject = async ( project_id ) => {
     setError(null);
     try {
       setIsLoading(true);
@@ -168,13 +167,7 @@ function ProjectProvider({ children }) {
         credentials: "include",
       });
 
-      if (!res.ok) {
-        const errorMessage =
-          res.status === 404
-            ? "Project tasks not found"
-            : "Failed to fetch project tasks";
-        throw new Error(errorMessage);
-      }
+      //if (!res.ok) throw new Error("Failed to fetch task to this project");
 
       const data = await res.json();
       setTasks(data);

@@ -31,11 +31,14 @@ export default function Project({ params }) {
   const [error, setError] = useState(null);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   console.log(tasks)
+
   
 
   useEffect(() => {
     const fetchOnLoad =  async () => {
       await getProject(projectId);
+      await getTasksFromProject(projectId)
+
     }
 
     fetchOnLoad()
@@ -287,7 +290,7 @@ export default function Project({ params }) {
 
       {/* Tasks Section */}
       <div className="max-w-5xl mx-auto mt-8">
-        { /*<TaskList  projectId={projectId} /> */}
+        <TaskList  tasks={tasks} projectId={projectId} /> 
       </div>
 
       <TaskModal

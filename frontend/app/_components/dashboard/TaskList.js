@@ -12,7 +12,7 @@ import {
 import TaskDetailModal from "./TaskDetailModal";
 import { useProject } from "@/context/ProjectProvider";
 
-export default function TaskList({ projectId }) {
+export default function TaskList({ tasks=[], projectId }) {
   const [viewType, setViewType] = useState("list"); // 'list', 'board', or 'table'
   const [selectedTask, setSelectedTask] = useState(null);
   const { updateTask, deleteTask, getProject, getTasksFromProject, isLoading } =
@@ -109,7 +109,7 @@ export default function TaskList({ projectId }) {
 
   const renderListView = () => (
     <div className="space-y-4">
-      {tasks.map((task) => (
+      {tasks?.map((task) => (
         <div
           key={task.id}
           onClick={() => handleTaskClick(task)}
@@ -271,7 +271,7 @@ export default function TaskList({ projectId }) {
         </div>
       </div>
 
-      {tasks.length === 0 ? (
+      {tasks?.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-lg">
           <p className="text-gray-500">No tasks yet. Create your first task!</p>
         </div>
