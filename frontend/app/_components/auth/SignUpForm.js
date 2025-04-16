@@ -1,33 +1,35 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useAuth } from '@/context/AuthProvider';
-import Link from 'next/link';
-import PasswordInput from './PasswordInput';
-import TextInput from '@/app/_components/TextInput';
+import { useState } from "react";
+import { useAuth } from "@/context/AuthProvider";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import PasswordInput from "./PasswordInput";
+import TextInput from "@/app/_components/TextInput";
 
 // Sign up form
 export default function SignUpForm() {
-  const { signup } = useAuth()
+  const { signup } = useAuth();
+  const router = useRouter();
   const [formData, setFormData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    console.log("Form submitted:", formData);
     // Form submission logic will be added later
 
     try {
@@ -35,17 +37,19 @@ export default function SignUpForm() {
         first_name: formData.first_name,
         last_name: formData.last_name,
         email: formData.email,
-        password: formData.password
-      })
-    } catch(err) {
-      console.error(err.message)
+        password: formData.password,
+      });
+
+      router.push("/dashboard");
+    } catch (err) {
+      console.error(err.message);
     } finally {
       setFormData({
-        first_name: '', 
-        last_name: '',
-        email: '',
-        password: ''
-      })
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+      });
     }
   };
 
@@ -53,10 +57,14 @@ export default function SignUpForm() {
     <div className="h-[calc(100vh-80px)] flex items-center justify-center bg-transparent px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-[400px] space-y-6">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Create your account</h2>
+          <h2 className="text-3xl font-bold text-gray-900">
+            Create your account
+          </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Already have an account?{' '}
-            <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="font-medium text-blue-600 hover:text-blue-500">
               Sign in
             </Link>
           </p>
@@ -127,12 +135,16 @@ export default function SignUpForm() {
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
-              I agree to the{' '}
-              <Link href="/terms" className="font-medium text-blue-600 hover:text-blue-500">
+              I agree to the{" "}
+              <Link
+                href="/terms"
+                className="font-medium text-blue-600 hover:text-blue-500">
                 Terms of Service
-              </Link>{' '}
-              and{' '}
-              <Link href="/privacy" className="font-medium text-blue-600 hover:text-blue-500">
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="/privacy"
+                className="font-medium text-blue-600 hover:text-blue-500">
                 Privacy Policy
               </Link>
             </label>
@@ -144,8 +156,7 @@ export default function SignUpForm() {
               className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg 
                 shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 
                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
-                transition-colors duration-200"
-            >
+                transition-colors duration-200">
               Create account
             </button>
           </div>
@@ -161,4 +172,4 @@ export default function SignUpForm() {
       </div>
     </div>
   );
-}    
+}

@@ -76,7 +76,8 @@ function AuthProvider({ children}) {
           credentials: "include",
           body: JSON.stringify({ email, password }),
         });
-    
+        
+        console.log(res)
         if (!res.ok) throw new Error("Invalid email or password");
         const loginData = await res.json();
     

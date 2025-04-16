@@ -1,24 +1,35 @@
 "use client"
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeftIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { useProject } from '@/context/ProjectProvider';
 
-export default function Project() {
-    const params = useParams();
+export default function Project({ params }) {
+    const { project, isLoading, getProject, deleteProject} = useProject()
+    //console.log(project)
+    const resolvedParams = use(params)
+    console.log(resolvedParams)
+    const projectId = resolvedParams.project
+    console.log(projectId)
     const router = useRouter();
-    const [project, setProject] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+   
     const [isEditing, setIsEditing] = useState(false);
     const [editedProject, setEditedProject] = useState(null);
     const [error, setError] = useState(null);
 
+    console.log(project)
+    useEffect(()=>{
+        getProject(projectId)
+    }, [projectId])
+    
+    /*
+    
     useEffect(() => {
         // Wrap localStorage operations in try-catch for SSR safety
         try {
             // Check if params.project exists
             if (!params?.project) {
                 setError('Invalid project ID');
-                setIsLoading(false);
                 return;
             }
 
@@ -50,19 +61,13 @@ export default function Project() {
         } catch (err) {
             setError('Error loading project');
             console.error('Error:', err);
-        } finally {
-            setIsLoading(false);
-        }
+        } 
     }, [params?.project]); // Only depend on params.project
-
-    const handleDelete = () => {
+*/
+    const handleDelete = async () => {
         try {
-            if (confirm('Are you sure you want to delete this project?')) {
-                const savedProjects = JSON.parse(localStorage.getItem('projects') || '[]');
-                const updatedProjects = savedProjects.filter(p => p.id !== project.id);
-                localStorage.setItem('projects', JSON.stringify(updatedProjects));
-                router.push('/dashboard/projects');
-            }
+            await deleteProject(projectId)
+            router.push("/dashboard/projects")
         } catch (err) {
             setError('Error deleting project');
             console.error('Error:', err);
@@ -202,15 +207,6 @@ export default function Project() {
                             <div>
                                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                                     <span>Project Details</span>
-                                    {!isEditing && (
-                                        <span className={`ml-3 px-3 py-1 rounded-full text-sm font-medium ${
-                                            project.status === 'Completed' ? 'bg-green-100 text-green-800' :
-                                            project.status === 'In Progress' ? 'bg-blue-100 text-blue-800' :
-                                            'bg-yellow-100 text-yellow-800'
-                                        }`}>
-                                            {project.status}
-                                        </span>
-                                    )}
                                 </h3>
                                 <div className="space-y-4">
                                     {isEditing ? (
@@ -234,7 +230,7 @@ export default function Project() {
                                             </div>
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                                                    Deadline
+                                                    Deadlines
                                                 </label>
                                                 <input
                                                     type="date"
@@ -250,21 +246,12 @@ export default function Project() {
                                     ) : (
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="p-4 bg-gray-50 rounded-lg">
-                                                <p className="text-sm text-gray-600 mb-1">Deadline</p>
-                                                <p className="text-base font-medium text-gray-900">
-                                                    {new Date(project.deadline).toLocaleDateString('en-US', {
-                                                        year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric'
-                                                    })}
+                                                <p className="text-sm text-gray-600 mb-1">Description</p>
+                                                <p className="text-base font-medium text-gray-900 flex">
+                                                    {project.description}
                                                 </p>
                                             </div>
-                                            <div className="p-4 bg-gray-50 rounded-lg">
-                                                <p className="text-sm text-gray-600 mb-1">Days Remaining</p>
-                                                <p className="text-base font-medium text-gray-900">
-                                                    {Math.ceil((new Date(project.deadline) - new Date()) / (1000 * 60 * 60 * 24))} days
-                                                </p>
-                                            </div>
+                                            
                                         </div>
                                     )}
                                 </div>

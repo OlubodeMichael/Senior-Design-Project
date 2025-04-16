@@ -1,15 +1,15 @@
 from .models import Project, Task, ProjectMembership
 from .serializers import ProjectSerializer, TaskSerializer, ProjectMembershipSerializer, UserRegistrationSerializer, UserSerializer
 from .utils import generate_jwt
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, logout
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
-from datetime import timedelta
 from rest_framework import generics, permissions, status
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
 
 # USER VIEWS
 class UserRegistrationView(generics.CreateAPIView):
@@ -17,21 +17,21 @@ class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
 
-    def perform_create(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
-        jwt_token = generate_jwt(user)
+        token = generate_jwt(user)
 
         response = Response({"message": "User registered"}, status=status.HTTP_201_CREATED)
         response.set_cookie(
             key='jwt',
-            value=jwt_token,
+            value=token,
             httponly=True,
-            secure=not request._request.is_secure() and not settings.DEBUG,
-            samesite='Lax',
-            max_age=86400  # 1 day
+            secure=True,
+            samesite='None',
+            max_age=3888000
         )
         return response
 
@@ -53,16 +53,16 @@ class LoginView(APIView):
         if user is None:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
-        jwt_token = generate_jwt(user)
+        token = generate_jwt(user)
 
         response = Response({"message": "Login successful"}, status=status.HTTP_200_OK)
         response.set_cookie(
             key='jwt',
-            value=jwt_token,
+            value=token,
             httponly=True,
-            secure=not request._request.is_secure() and not settings.DEBUG,
-            samesite='Lax',
-            max_age=86400
+            secure=True,
+            samesite='None',
+            max_age=3888000
         )
         return response
     
@@ -83,9 +83,11 @@ class ProfileView(generics.RetrieveAPIView):
 
 # PROJECT VIEWS
 class ProjectListCreateView(generics.ListCreateAPIView):
-    queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Project.objects.filter(projectmembership__user=self.request.user).distinct()
 
     def perform_create(self, serializer):
         user = self.request.user
@@ -94,9 +96,11 @@ class ProjectListCreateView(generics.ListCreateAPIView):
             user=user, project=project, role='owner')
 
 class ProjectDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Project.objects.filter(projectmembership__user=self.request.user).distinct()
 
 
 # TASK VIEWS
@@ -106,22 +110,39 @@ class TaskListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         project_id = self.kwargs['project_id']
-        return Task.objects.filter(project_id=project_id)
+        project = get_object_or_404(Project, id=project_id)
+
+        if not ProjectMembership.objects.filter(user=self.request.user, project=project).exists():
+            raise PermissionDenied('You are not a member of this project.')
+
+        return Task.objects.filter(project=project)
 
     def perform_create(self, serializer):
         project = get_object_or_404(Project, id=self.kwargs['project_id'])
-        assignee = self.request.data.get('assignee', None)
 
+        if not ProjectMembership.objects.filter(user=self.request.user, project=project).exists():
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied('You are not a member of this project.')
+
+        assignee = self.request.data.get('assignee', None)
         if assignee:
             assignee = get_object_or_404(User, id=assignee)
 
-        # Save task with project and assignee
         serializer.save(project=project, assignee=assignee)
 
+
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        project_id = self.kwargs['project_id']
+        project = get_object_or_404(Project, id=project_id)
+
+        if not ProjectMembership.objects.filter(user=self.request.user, project=project).exists():
+            raise PermissionDenied('You are not a member of this project.')
+
+        return Task.objects.filter(project=project)
 
 
 # PROJECT MEMBERSHIP VIEWS

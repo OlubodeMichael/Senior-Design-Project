@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+"use client"
+import { createContext, useContext, useState, useEffect } from "react";
 
 const ProjectContext = createContext();
 
@@ -25,6 +26,10 @@ function ProjectProvider({ children }) {
     return null;
   }
 
+  useEffect(()=>{
+    getAllProjects()
+  }, [])
+
   const getAllProjects = async () => {
     setError(null);
     try {
@@ -47,19 +52,19 @@ function ProjectProvider({ children }) {
     }
   };
 
-  const createProject = async (newData) => {
+  const createProject = async (newProject) => {
     const csrfToken = getCSRFToken()
     setError(null);
     try {
       setIsLoading(true);
-      const res = await fetch(`${api_url}/api/projects`, {
+      const res = await fetch(`${api_url}/api/projects/`, {
         method: 'POST',
         headers: {
            'Content-Type': 'application/json' ,
            "X-CSRFToken": csrfToken,
           },
         credentials: 'include',
-        body: JSON.stringify(newData)
+        body: JSON.stringify(newProject)
       });
       if (!res.ok) throw new Error("Failed to create project");
       const data = await res.json();
@@ -71,11 +76,11 @@ function ProjectProvider({ children }) {
     }
   };
 
-  const getProject = async ({ project_id }) => {
+  const getProject = async (project_id ) => {
     setError(null);
     try {
       setIsLoading(true);
-      const res = await fetch(`${api_url}/api/projects/${project_id}`, {
+      const res = await fetch(`${api_url}/api/projects/${project_id}/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -83,6 +88,7 @@ function ProjectProvider({ children }) {
         credentials: 'include'
       });
       if (!res.ok) throw new Error("Failed to get project");
+      console.log(res)
       const data = await res.json();
       setProject(data || null);
     } catch (err) {
@@ -117,16 +123,14 @@ function ProjectProvider({ children }) {
     }
   };
 
-  const deleteProject = async ({ project_id }) => {
-    const csrfToken = getCSRFToken()
+  const deleteProject = async (project_id ) => {
     setError(null);
     try {
       setIsLoading(true);
-      const res = await fetch(`${api_url}/api/projects/${project_id}`, {
+      const res = await fetch(`${api_url}/api/projects/${project_id}/`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          "X-CSRFToken": csrfToken,
         },
         credentials: 'include'
       });

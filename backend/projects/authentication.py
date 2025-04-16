@@ -3,6 +3,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.models import User
 from .utils import get_user_from_jwt
 
+
 class JWTAuthentication(BaseAuthentication):
     def authenticate(self, request):
         try:

@@ -6,7 +6,7 @@ urlpatterns = [
     path('signup/', views.UserRegistrationView.as_view(), name='signup'), 
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
-    path('me/', views.ProfileView.as_view(), name='logout'),
+    path('me/', views.ProfileView.as_view(), name='me'),
 
     # Project endpoints
     path('projects/', views.ProjectListCreateView.as_view(), name='project_list_create'),  # List & create projects

@@ -8,11 +8,10 @@ class UserSerializer(serializers.ModelSerializer):
     """Serialize basic user details along with JWT token."""
 
     user_id = serializers.IntegerField(source='id', read_only=True)
-    token = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['user_id', 'username', 'email', 'first_name', 'last_name', 'token']
+        fields = ['username', 'email', 'first_name', 'last_name', 'user_id']
 
     def get_token(self, obj):
         """Generate JWT token for the user."""
@@ -62,18 +61,19 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user.is_staff = False
         user.is_superuser = False
         user.save()
-        refresh = RefreshToken.for_user(user)
-        return {'user': user, 'token': str(refresh.access_token)}
+        return user
 
 
 class ProjectMembershipSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
     user_id = serializers.ReadOnlyField(source='user.id')
     user_email = serializers.ReadOnlyField(source='user.email')
+    first_name = serializers.ReadOnlyField(source='user.first_name')
+    last_name = serializers.ReadOnlyField(source='user.last_name')
     
     class Meta:
         model = ProjectMembership
-        fields = ['user', 'user_email', 'user_id', 'role', 'joined_at']
+        fields = ['user', 'user_email', 'first_name', 'last_name', 'user_id', 'role', 'joined_at']
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -89,10 +89,11 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class TaskSerializer(serializers.ModelSerializer):
     project = serializers.PrimaryKeyRelatedField(read_only=True)
+    project_name = serializers.ReadOnlyField(source='project.name')
 
     class Meta:
         model = Task
-        fields = ['id', 'title', 'description', 'status', 'priority', 'assignee', 'project', 'created_at', 'updated_at', 'due_date']
+        fields = ['id', 'title', 'description', 'status', 'priority', 'assignee', 'project', 'project_name', 'created_at', 'updated_at', 'due_date']
         read_only_fields = ['created_at', 'updated_at', 'project']
 
     def validate_assignee(self, value):

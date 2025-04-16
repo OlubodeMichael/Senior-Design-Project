@@ -1,39 +1,43 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import PasswordInput from './PasswordInput';
-import TextInput from '@/app/_components/TextInput';
-import { useAuth } from '@/context/AuthProvider';
+import { useState } from "react";
+import Link from "next/link";
+import PasswordInput from "./PasswordInput";
+import { useRouter } from "next/navigation";
+import TextInput from "@/app/_components/TextInput";
+import { useAuth } from "@/context/AuthProvider";
 
 export default function LoginForm() {
-  const { login } = useAuth()
+  const { login } = useAuth();
+  const router = useRouter();
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    
+    console.log("Form submitted:", formData);
+
     try {
       await login({
         email: formData.email,
-        password: formData.password
-      })
-    } catch(err) {
-      console.error(err)
+        password: formData.password,
+      });
+
+      router.push("/dashboard");
+    } catch (err) {
+      console.error(err);
     } finally {
-      setFormData({ email: '', password: ''})
+      setFormData({ email: "", password: "" });
     }
   };
 
@@ -43,8 +47,10 @@ export default function LoginForm() {
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link href="/signup" className="font-medium text-blue-600 hover:text-blue-500">
+            Don't have an account?{" "}
+            <Link
+              href="/signup"
+              className="font-medium text-blue-600 hover:text-blue-500">
               Sign up
             </Link>
           </p>
@@ -82,13 +88,17 @@ export default function LoginForm() {
                 type="checkbox"
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+              <label
+                htmlFor="remember-me"
+                className="ml-2 block text-sm text-gray-900">
                 Remember me
               </label>
             </div>
 
             <div className="text-sm">
-              <Link href="/forgot-password" className="font-medium text-blue-600 hover:text-blue-500">
+              <Link
+                href="/forgot-password"
+                className="font-medium text-blue-600 hover:text-blue-500">
                 Forgot your password?
               </Link>
             </div>
@@ -100,8 +110,7 @@ export default function LoginForm() {
               className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg 
                 shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 
                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
-                transition-colors duration-200"
-            >
+                transition-colors duration-200">
               Sign in
             </button>
           </div>
