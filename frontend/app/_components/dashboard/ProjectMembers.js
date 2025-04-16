@@ -28,7 +28,7 @@ export default function ProjectMembers({ members }) {
                     </span>
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">{member.user}</h3>
+                    <h3 className="font-medium text-gray-900">{member.first_name+" "+member.last_name}</h3>
                     <div className="flex items-center text-sm text-gray-500 mt-1">
                       <EnvelopeIcon className="h-4 w-4 mr-1" />
                       <span>{member.user_email || "No email provided"}</span>
