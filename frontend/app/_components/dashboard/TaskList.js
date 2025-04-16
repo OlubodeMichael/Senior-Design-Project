@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import {
-  ViewListIcon,
-  ViewBoardsIcon,
+  Bars4Icon,
+  ViewColumnsIcon,
   TableCellsIcon,
   CheckCircleIcon,
   ClockIcon,
@@ -231,7 +231,7 @@ export default function TaskList({ tasks = [], projectId }) {
                 ? "bg-blue-50 text-blue-600"
                 : "text-gray-400 hover:text-gray-500"
             }`}>
-            <ViewListIcon className="w-5 h-5" />
+            <Bars4Icon className="w-5 h-5" />
           </button>
           <button
             onClick={() => setViewType("board")}
@@ -240,7 +240,7 @@ export default function TaskList({ tasks = [], projectId }) {
                 ? "bg-blue-50 text-blue-600"
                 : "text-gray-400 hover:text-gray-500"
             }`}>
-            <ViewBoardsIcon className="w-5 h-5" />
+            <ViewColumnsIcon className="w-5 h-5" />
           </button>
           <button
             onClick={() => setViewType("table")}
