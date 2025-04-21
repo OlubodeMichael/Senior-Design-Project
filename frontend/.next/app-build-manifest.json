@@ -35,6 +35,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/dashboard/projects/[project]/page.js"
+    ],
+    "/dashboard/team/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/dashboard/team/page.js"
     ]
   }
 }

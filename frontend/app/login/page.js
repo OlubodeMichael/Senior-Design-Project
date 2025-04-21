@@ -1,5 +1,5 @@
-import LoginForm from '@/app/_components/auth/LoginForm';
-import Link from 'next/link';
+import LoginForm from "@/app/_components/auth/LoginForm";
+import Link from "next/link";
 
 export default function LoginPage() {
   return (
@@ -15,10 +15,9 @@ export default function LoginPage() {
       <div className="relative z-10">
         <div className="fixed top-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-sm border-b border-gray-200">
           <div className="max-w-[400px] mx-auto px-4">
-            <Link 
-              href="/" 
-              className="inline-block text-xl sm:text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors duration-200"
-            >
+            <Link
+              href="/"
+              className="inline-block text-xl sm:text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors duration-200">
               CollabFlow
             </Link>
           </div>
