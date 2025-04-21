@@ -17,12 +17,14 @@ function Projects() {
   console.log(tasks);
 
   // This useEffect will handle saving changes to localStorage
+  /*
   useEffect(() => {
     // Only save if projects state is not the initial empty array during loading
     if (!isLoading && projects.length >= 0) {
       localStorage.setItem("projects", JSON.stringify(projects));
     }
   }, [projects, isLoading]);
+  */
 
   const handleSubmit = async (e) => {
     e.preventDefault();
