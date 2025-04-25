@@ -86,33 +86,38 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'owner', 'members', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
 
-
 class TaskSerializer(serializers.ModelSerializer):
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     project_name = serializers.ReadOnlyField(source='project.name')
+    assignee = UserSerializer(read_only=True)
+    assignee_id = serializers.PrimaryKeyRelatedField(
+        source='assignee',
+        queryset=User.objects.all(),
+        write_only=True,
+        required=False,
+        allow_null=True
+    )
 
     class Meta:
         model = Task
-        fields = ['id', 'title', 'description', 'status', 'priority', 'assignee', 'project', 'project_name', 'created_at', 'updated_at', 'due_date']
+        fields = ['id', 'title', 'description', 'status', 'priority', 'assignee', 'assignee_id', 'project', 'project_name', 'created_at', 'updated_at', 'due_date']
         read_only_fields = ['created_at', 'updated_at', 'project']
 
-    def validate_assignee(self, value):
-        """Ensure assignee is either null or a project member."""
-        project = self.instance.project if self.instance else self.context['request'].data.get('project')
+    def validate_assignee_id(self, value):
+        project_id = self.context['view'].kwargs.get('project_id')
+        project = Project.objects.get(id=project_id)
 
         if value is not None:
             if not ProjectMembership.objects.filter(project=project, user=value).exists():
                 raise serializers.ValidationError("Assignee must be a member of the project.")
-
         return value
     
 class CommentSerializer(serializers.ModelSerializer):
     commenter = UserSerializer(read_only=True)
-    commenter_email = serializers.ReadOnlyField(source='commenter.email')
     task = serializers.PrimaryKeyRelatedField(read_only=True)
     task_title = serializers.ReadOnlyField(source='task.title')
 
     class Meta:
         model = Comment
-        fields = ['comment', 'id', 'commenter', 'commenter_email', 'task', 'task_title', 'posted_at']
-        read_only_fields = ['commenter', 'commenter_email', 'posted_at', 'task_title']
+        fields = ['comment', 'id', 'commenter', 'task', 'task_title', 'posted_at']
+        read_only_fields = ['commenter', 'posted_at', 'task_title']
