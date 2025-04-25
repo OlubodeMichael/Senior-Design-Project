@@ -32,7 +32,6 @@ class ProjectMembership(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.project.name} ({self.role})"
 
-
 class Task(models.Model):
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="tasks")
@@ -59,3 +58,12 @@ class Task(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.get_status_display()})"
+    
+class Comment(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comments')
+    commenter = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')
+    comment = models.TextField()
+    posted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.commenter.username} on {self.task.title}"

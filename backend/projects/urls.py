@@ -18,5 +18,9 @@ urlpatterns = [
 
     # Project membership endpoints
     path('projects/<uuid:project_id>/members/', views.ProjectMembershipView.as_view(), name='project_membership'),  # List and add members
-    path('projects/<uuid:project_id>/members/<int:user_id>/', views.ProjectMembershipDetailView.as_view(), name='project_membership_detail'), # Update and delete members
+    path('projects/<uuid:project_id>/members/<int:user_id>/', views.ProjectMembershipDetailView.as_view(), name='project_membership_detail'), # Update or delete member
+
+    # Comment endpoints
+    path('projects/<uuid:project_id>/tasks/<int:pk>/comments/', views.CommentListCreateView.as_view(), name='comment'), # List and add comments
+    path('projects/<uuid:project_id>/tasks/<int:pk>/comments/<int:pk>/', views.CommentDetailView.as_view(), name='comment_detail'), # Retrieve or delete a comment
 ]

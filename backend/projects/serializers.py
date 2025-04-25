@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Project, Task, ProjectMembership
+from .models import Project, Task, ProjectMembership, Comment
 from django.contrib.auth.models import User
 
 
@@ -105,3 +105,14 @@ class TaskSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Assignee must be a member of the project.")
 
         return value
+    
+class CommentSerializer(serializers.ModelSerializer):
+    commenter = UserSerializer(read_only=True)
+    commenter_email = serializers.ReadOnlyField(source='commenter.email')
+    task = serializers.PrimaryKeyRelatedField(read_only=True)
+    task_title = serializers.ReadOnlyField(source='task.title')
+
+    class Meta:
+        model = Comment
+        fields = ['comment', 'id', 'commenter', 'commenter_email', 'task_title', 'posted_at']
+        read_only_fields = ['commenter', 'commenter_email', 'posted_at', 'task_title']

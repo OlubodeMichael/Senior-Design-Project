@@ -1,5 +1,5 @@
-from .models import Project, Task, ProjectMembership
-from .serializers import ProjectSerializer, TaskSerializer, ProjectMembershipSerializer, UserRegistrationSerializer, UserSerializer
+from .models import Project, Task, ProjectMembership, Comment
+from .serializers import ProjectSerializer, TaskSerializer, ProjectMembershipSerializer, UserRegistrationSerializer, UserSerializer, CommentSerializer
 from .utils import generate_jwt
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -235,3 +235,38 @@ class ProjectMembershipDetailView(APIView):
 
         membership.delete()
         return Response({'detail': 'User removed from project.'}, status=status.HTTP_204_NO_CONTENT)
+    
+# COMMENT VIEWS
+class CommentListCreateView(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        task_id = self.kwargs['task_id']
+        task = get_object_or_404(Task, id=task_id)
+
+        if not ProjectMembership.objects.filter(user=self.request.user, project=task.project).exists():
+            raise PermissionDenied("You are not a member of this project.")
+
+        return Comment.objects.filter(task=task).order_by('created_at')
+
+    def perform_create(self, serializer):
+        task = get_object_or_404(Task, id=self.kwargs['task_id'])
+
+        if not ProjectMembership.objects.filter(user=self.request.user, project=task.project).exists():
+            raise PermissionDenied("You are not a member of this project.")
+
+        serializer.save(task=task, commenter=self.request.user)
+
+class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        task_id = self.kwargs['task_id']
+        task = get_object_or_404(Task, id=task_id)
+
+        if not ProjectMembership.objects.filter(user=self.request.user, project=task.project).exists():
+            raise PermissionDenied("You are not a member of this project.")
+
+        return Comment.objects.filter(task=task)
