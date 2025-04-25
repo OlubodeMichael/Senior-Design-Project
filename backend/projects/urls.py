@@ -22,5 +22,5 @@ urlpatterns = [
 
     # Comment endpoints
     path('projects/<uuid:project_id>/tasks/<int:pk>/comments/', views.CommentListCreateView.as_view(), name='comment'), # List and add comments
-    path('projects/<uuid:project_id>/tasks/<int:pk>/comments/<int:pk>/', views.CommentDetailView.as_view(), name='comment_detail'), # Retrieve or delete a comment
+    path('projects/<uuid:project_id>/tasks/<int:task_id>/comments/<int:comment_id>/', views.CommentDetailView.as_view(), name='comment_detail'), # Retrieve or delete a comment
 ]
