@@ -80,11 +80,12 @@ class MeView(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         return Response(self.serializer_class(request.user).data)
     
-# class ProfileView(generics.RetrieveAPIView):
-#     serializer_class = UserSerializer
-#     permission_classes = [permissions.IsAuthenticated]
-
-
+class ProfileView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'username'
+    lookup_url_kwarg = 'username'
 
 
 # PROJECT VIEWS
