@@ -242,8 +242,11 @@ class CommentListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        project_id = self.kwargs['project_id']
         task_id = self.kwargs['task_id']
-        task = get_object_or_404(Task, id=task_id)
+
+        # Ensure task belongs to project
+        task = get_object_or_404(Task, id=task_id, project__id=project_id)
 
         if not ProjectMembership.objects.filter(user=self.request.user, project=task.project).exists():
             raise PermissionDenied("You are not a member of this project.")
@@ -251,7 +254,9 @@ class CommentListCreateView(generics.ListCreateAPIView):
         return Comment.objects.filter(task=task).order_by('posted_at')
 
     def perform_create(self, serializer):
-        task = get_object_or_404(Task, id=self.kwargs['task_id'])
+        project_id = self.kwargs['project_id']
+        task_id = self.kwargs['task_id']
+        task = get_object_or_404(Task, id=task_id, project__id=project_id)
 
         if not ProjectMembership.objects.filter(user=self.request.user, project=task.project).exists():
             raise PermissionDenied("You are not a member of this project.")
@@ -263,9 +268,9 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        project_id = self.kwargs['project_id']
         task_id = self.kwargs['task_id']
-        comment_id = self.kwargs['comment_id']
-        task = get_object_or_404(Task, id=task_id)
+        task = get_object_or_404(Task, id=task_id, project__id=project_id)
 
         if not ProjectMembership.objects.filter(user=self.request.user, project=task.project).exists():
             raise PermissionDenied("You are not a member of this project.")
