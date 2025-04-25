@@ -127,7 +127,6 @@ class TaskListCreateView(generics.ListCreateAPIView):
         project = get_object_or_404(Project, id=self.kwargs['project_id'])
 
         if not ProjectMembership.objects.filter(user=self.request.user, project=project).exists():
-            from rest_framework.exceptions import PermissionDenied
             raise PermissionDenied('You are not a member of this project.')
 
         assignee = self.request.data.get('assignee', None)

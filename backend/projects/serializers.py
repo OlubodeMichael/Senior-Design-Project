@@ -90,27 +90,49 @@ class TaskSerializer(serializers.ModelSerializer):
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     project_name = serializers.ReadOnlyField(source='project.name')
     assignee = UserSerializer(read_only=True)
-    assignee_id = serializers.PrimaryKeyRelatedField(
-        source='assignee',
-        queryset=User.objects.all(),
-        write_only=True,
-        required=False,
-        allow_null=True
-    )
+
+    assignee_username = serializers.CharField(write_only=True, required=False, allow_null=True)
 
     class Meta:
         model = Task
-        fields = ['id', 'title', 'description', 'status', 'priority', 'assignee', 'assignee_id', 'project', 'project_name', 'created_at', 'updated_at', 'due_date']
+        fields = [
+            'id', 'title', 'description', 'status', 'priority',
+            'assignee', 'assignee_username',
+            'project', 'project_name', 'created_at', 'updated_at', 'due_date'
+        ]
         read_only_fields = ['created_at', 'updated_at', 'project']
 
-    def validate_assignee_id(self, value):
+    def validate_assignee_username(self, username):
+        if username in (None, ''):
+            return None
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("No such user.")
+
         project_id = self.context['view'].kwargs.get('project_id')
+        if not project_id:
+            raise serializers.ValidationError("Cannot resolve project.")
+
         project = Project.objects.get(id=project_id)
 
-        if value is not None:
-            if not ProjectMembership.objects.filter(project=project, user=value).exists():
-                raise serializers.ValidationError("Assignee must be a member of the project.")
-        return value
+        if not ProjectMembership.objects.filter(project=project, user=user).exists():
+            raise serializers.ValidationError("Assignee must be a member of the project.")
+
+        return user
+
+    def create(self, validated_data):
+        assignee = validated_data.pop('assignee_username', None)
+        if assignee is not None:
+            validated_data['assignee'] = assignee
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        assignee = validated_data.pop('assignee_username', None)
+        if assignee is not None:
+            instance.assignee = assignee
+        return super().update(instance, validated_data)
     
 class CommentSerializer(serializers.ModelSerializer):
     commenter = UserSerializer(read_only=True)
