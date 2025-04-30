@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Project, Task, ProjectMembership
+from .models import Project, Task, ProjectMembership, Comment
 from django.contrib.auth.models import User
 
 
@@ -86,22 +86,60 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'owner', 'members', 'created_at', 'updated_at']
         read_only_fields = ['created_at', 'updated_at']
 
-
 class TaskSerializer(serializers.ModelSerializer):
     project = serializers.PrimaryKeyRelatedField(read_only=True)
     project_name = serializers.ReadOnlyField(source='project.name')
+    assignee = UserSerializer(read_only=True)
+
+    assignee_username = serializers.CharField(write_only=True, required=False, allow_null=True)
 
     class Meta:
         model = Task
-        fields = ['id', 'title', 'description', 'status', 'priority', 'assignee', 'project', 'project_name', 'created_at', 'updated_at', 'due_date']
+        fields = [
+            'id', 'title', 'description', 'status', 'priority',
+            'assignee', 'assignee_username',
+            'project', 'project_name', 'created_at', 'updated_at', 'due_date'
+        ]
         read_only_fields = ['created_at', 'updated_at', 'project']
 
-    def validate_assignee(self, value):
-        """Ensure assignee is either null or a project member."""
-        project = self.instance.project if self.instance else self.context['request'].data.get('project')
+    def validate_assignee_username(self, username):
+        if username in (None, ''):
+            return None
 
-        if value is not None:
-            if not ProjectMembership.objects.filter(project=project, user=value).exists():
-                raise serializers.ValidationError("Assignee must be a member of the project.")
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("No such user.")
 
-        return value
+        project_id = self.context['view'].kwargs.get('project_id')
+        if not project_id:
+            raise serializers.ValidationError("Cannot resolve project.")
+
+        project = Project.objects.get(id=project_id)
+
+        if not ProjectMembership.objects.filter(project=project, user=user).exists():
+            raise serializers.ValidationError("Assignee must be a member of the project.")
+
+        return user
+
+    def create(self, validated_data):
+        assignee = validated_data.pop('assignee_username', None)
+        if assignee is not None:
+            validated_data['assignee'] = assignee
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        assignee = validated_data.pop('assignee_username', None)
+        if assignee is not None:
+            instance.assignee = assignee
+        return super().update(instance, validated_data)
+    
+class CommentSerializer(serializers.ModelSerializer):
+    commenter = UserSerializer(read_only=True)
+    task = serializers.PrimaryKeyRelatedField(read_only=True)
+    task_title = serializers.ReadOnlyField(source='task.title')
+
+    class Meta:
+        model = Comment
+        fields = ['comment', 'id', 'commenter', 'task', 'task_title', 'posted_at']
+        read_only_fields = ['commenter', 'posted_at', 'task_title']

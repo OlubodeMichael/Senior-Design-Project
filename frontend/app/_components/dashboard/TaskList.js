@@ -120,9 +120,9 @@ export default function TaskList({ tasks = [], projectId }) {
 
   const renderBoardView = () => {
     const columns = {
-      todo: tasks.filter((t) => t.status === "todo"),
-      in_progress: tasks.filter((t) => t.status === "in_progress"),
-      done: tasks.filter((t) => t.status === "done"),
+      todo: tasks?.filter((t) => t.status === "todo"),
+      in_progress: tasks?.filter((t) => t.status === "in_progress"),
+      done: tasks?.filter((t) => t.status === "done"),
     };
 
     return (
@@ -133,11 +133,11 @@ export default function TaskList({ tasks = [], projectId }) {
               {getStatusIcon({ status })}
               <span className="ml-2">{status.replace("_", " ")}</span>
               <span className="ml-auto bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-full">
-                {statusTasks.length}
+                {statusTasks?.length}
               </span>
             </h3>
             <div className="space-y-3">
-              {statusTasks.map((task) => (
+              {statusTasks?.map((task) => (
                 <div
                   key={task.id}
                   onClick={() => handleTaskClick(task)}
@@ -161,7 +161,7 @@ export default function TaskList({ tasks = [], projectId }) {
                   </div>
                 </div>
               ))}
-              {statusTasks.length === 0 && (
+              {statusTasks?.length === 0 && (
                 <div className="bg-white rounded-lg border border-dashed border-gray-300 p-4 text-center">
                   <p className="text-sm text-gray-500">No tasks</p>
                 </div>
@@ -196,7 +196,7 @@ export default function TaskList({ tasks = [], projectId }) {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {tasks.map((task) => (
+          {tasks?.map((task) => (
             <tr
               key={task.id}
               onClick={() => handleTaskClick(task)}

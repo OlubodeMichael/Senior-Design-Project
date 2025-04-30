@@ -1,5 +1,5 @@
-from .models import Project, Task, ProjectMembership
-from .serializers import ProjectSerializer, TaskSerializer, ProjectMembershipSerializer, UserRegistrationSerializer, UserSerializer
+from .models import Project, Task, ProjectMembership, Comment
+from .serializers import ProjectSerializer, TaskSerializer, ProjectMembershipSerializer, UserRegistrationSerializer, UserSerializer, CommentSerializer
 from .utils import generate_jwt
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -72,13 +72,20 @@ class LogoutView(APIView):
         response.delete_cookie('jwt')
         return response
 
-class ProfileView(generics.RetrieveAPIView):
+class MeView(generics.RetrieveAPIView):
     """API endpoint to get details of the authenticated user."""
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         return Response(self.serializer_class(request.user).data)
+    
+class ProfileView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    lookup_field = 'username'
+    lookup_url_kwarg = 'username'
 
 
 # PROJECT VIEWS
@@ -121,7 +128,6 @@ class TaskListCreateView(generics.ListCreateAPIView):
         project = get_object_or_404(Project, id=self.kwargs['project_id'])
 
         if not ProjectMembership.objects.filter(user=self.request.user, project=project).exists():
-            from rest_framework.exceptions import PermissionDenied
             raise PermissionDenied('You are not a member of this project.')
 
         assignee = self.request.data.get('assignee', None)
@@ -129,7 +135,6 @@ class TaskListCreateView(generics.ListCreateAPIView):
             assignee = get_object_or_404(User, id=assignee)
 
         serializer.save(project=project, assignee=assignee)
-
 
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
@@ -162,30 +167,32 @@ class ProjectMembershipView(APIView):
         return Response(serializer.data)
 
     def post(self, request, project_id):
-        """Add a new member to the project (Owner/Admins only)"""
         project = get_object_or_404(Project, id=project_id)
         requesting_membership = ProjectMembership.objects.filter(
             project=project, user=request.user).first()
 
-        # Only Owners and Admins can add members
         if not (project.owner == request.user or (requesting_membership and requesting_membership.role == 'admin')):
             return Response({'detail': 'Only project owners and admins can add members.'}, status=status.HTTP_403_FORBIDDEN)
 
-        user_id = request.data.get('user_id')
+        username = request.data.get('username')
         role = request.data.get('role', 'member')
 
-        if not user_id:
-            return Response({'error': 'User ID is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not username:
+            return Response({'error': 'Username is required.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        if ProjectMembership.objects.filter(project=project, user_id=user_id).exists():
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({'error': 'User with that username does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if ProjectMembership.objects.filter(project=project, user=user).exists():
             return Response({'detail': 'User is already a member of this project.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Only owners can set users as 'admin'
         if role == 'admin' and request.user != project.owner:
             return Response({'detail': 'Only the project owner can assign admin roles.'}, status=status.HTTP_403_FORBIDDEN)
 
         membership = ProjectMembership.objects.create(
-            user_id=user_id, project=project, role=role)
+            user=user, project=project, role=role)
         serializer = ProjectMembershipSerializer(membership)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -235,3 +242,45 @@ class ProjectMembershipDetailView(APIView):
 
         membership.delete()
         return Response({'detail': 'User removed from project.'}, status=status.HTTP_204_NO_CONTENT)
+    
+
+# COMMENT VIEWS
+class CommentListCreateView(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        project_id = self.kwargs['project_id']
+        task_id = self.kwargs['task_id']
+
+        # Ensure task belongs to project
+        task = get_object_or_404(Task, id=task_id, project__id=project_id)
+
+        if not ProjectMembership.objects.filter(user=self.request.user, project=task.project).exists():
+            raise PermissionDenied("You are not a member of this project.")
+
+        return Comment.objects.filter(task=task).order_by('posted_at')
+
+    def perform_create(self, serializer):
+        project_id = self.kwargs['project_id']
+        task_id = self.kwargs['task_id']
+        task = get_object_or_404(Task, id=task_id, project__id=project_id)
+
+        if not ProjectMembership.objects.filter(user=self.request.user, project=task.project).exists():
+            raise PermissionDenied("You are not a member of this project.")
+
+        serializer.save(task=task, commenter=self.request.user)
+
+class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        project_id = self.kwargs['project_id']
+        task_id = self.kwargs['task_id']
+        task = get_object_or_404(Task, id=task_id, project__id=project_id)
+
+        if not ProjectMembership.objects.filter(user=self.request.user, project=task.project).exists():
+            raise PermissionDenied("You are not a member of this project.")
+
+        return Comment.objects.filter(task=task)

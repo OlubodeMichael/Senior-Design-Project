@@ -79,7 +79,7 @@ export default function TaskDetailModal({
                   onChange={(e) =>
                     setEditedTask({ ...editedTask, title: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border text-gray-900 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-grey-800"
                 />
               </div>
 
@@ -95,7 +95,7 @@ export default function TaskDetailModal({
                       description: e.target.value,
                     })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-grey-800"
                   rows="3"
                 />
               </div>
@@ -109,7 +109,7 @@ export default function TaskDetailModal({
                   onChange={(e) =>
                     setEditedTask({ ...editedTask, status: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  className="w-full px-3 py-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-grey-800">
                   <option value="todo">To Do</option>
                   <option value="in_progress">In Progress</option>
                   <option value="done">Done</option>
@@ -125,11 +125,25 @@ export default function TaskDetailModal({
                   onChange={(e) =>
                     setEditedTask({ ...editedTask, priority: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                  className="w-full px-3 py-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-grey-800">
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
                   <option value="high">High</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Due Date
+                </label>
+                <input
+                  type="date"
+                  value={editedTask.due_date || ""}
+                  onChange={(e) =>
+                    setEditedTask({ ...editedTask, due_date: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-grey-800"
+                />
               </div>
 
               <div className="flex justify-end space-x-3 pt-4">
@@ -175,6 +189,15 @@ export default function TaskDetailModal({
                     {task.priority}
                   </p>
                 </div>
+              </div>
+
+              <div>
+                <h4 className="text-sm font-medium text-gray-500">Due Date</h4>
+                <p className="mt-1 text-gray-900">
+                  {task.due_date
+                    ? new Date(task.due_date).toLocaleDateString()
+                    : "No due date set"}
+                </p>
               </div>
 
               <div className="pt-4">

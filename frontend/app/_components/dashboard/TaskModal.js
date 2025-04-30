@@ -9,6 +9,7 @@ export default function TaskModal({ isOpen, onClose, onSubmit, projectId }) {
     description: "",
     status: "todo",
     priority: "medium",
+    due_date: "",
   });
 
   const handleSubmit = (e) => {
@@ -19,6 +20,7 @@ export default function TaskModal({ isOpen, onClose, onSubmit, projectId }) {
       description: "",
       status: "todo",
       priority: "medium",
+      due_date: "",
     });
     onClose();
   };
@@ -59,7 +61,7 @@ export default function TaskModal({ isOpen, onClose, onSubmit, projectId }) {
                 onChange={(e) =>
                   setTaskData({ ...taskData, title: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border text-gray-900 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-grey-800"
                 placeholder="Enter task title"
               />
             </div>
@@ -74,7 +76,7 @@ export default function TaskModal({ isOpen, onClose, onSubmit, projectId }) {
                 onChange={(e) =>
                   setTaskData({ ...taskData, description: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-grey-800"
                 rows="3"
                 placeholder="Enter task description"
               />
@@ -90,7 +92,7 @@ export default function TaskModal({ isOpen, onClose, onSubmit, projectId }) {
                 onChange={(e) =>
                   setTaskData({ ...taskData, status: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                className="w-full px-3 py-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-grey-800">
                 <option value="todo">To Do</option>
                 <option value="in_progress">In Progress</option>
                 <option value="done">Done</option>
@@ -107,11 +109,26 @@ export default function TaskModal({ isOpen, onClose, onSubmit, projectId }) {
                 onChange={(e) =>
                   setTaskData({ ...taskData, priority: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                className="w-full px-3 py-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-grey-800">
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
               </select>
+            </div>
+
+            {/* Due Date */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Due Date
+              </label>
+              <input
+                type="date"
+                value={taskData.due_date}
+                onChange={(e) =>
+                  setTaskData({ ...taskData, due_date: e.target.value })
+                }
+                className="w-full px-3 py-2 border text-gray-700 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-grey-800"
+              />
             </div>
 
             {/* Submit Button */}

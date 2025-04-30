@@ -11,7 +11,8 @@ function ProjectProvider({ children }) {
   const [task, setTask] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const api_url = process.env.DJANGO_API || "http://127.0.0.1:8000";
+  const api_url =
+    "https://collabflow-xzeb.onrender.com" || "http://localhost:8000";
 
   useEffect(() => {
     getAllProjects();
@@ -155,7 +156,7 @@ function ProjectProvider({ children }) {
     }
   };
 
-  const getTasksFromProject = async ( project_id ) => {
+  const getTasksFromProject = async (project_id) => {
     setError(null);
     try {
       setIsLoading(true);
@@ -174,6 +175,58 @@ function ProjectProvider({ children }) {
       return data;
     } catch (err) {
       setError(err.message);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getAllTasks = async () => {
+    setError(null);
+    try {
+      setIsLoading(true);
+      // First get all projects
+      const projectsRes = await fetch(`${api_url}/api/projects`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!projectsRes.ok) throw new Error("Failed to fetch projects");
+      const projectsData = await projectsRes.json();
+      setProjects(projectsData);
+
+      // Then get tasks for each project
+      const allTasks = [];
+      for (const project of projectsData) {
+        try {
+          const tasksRes = await fetch(
+            `${api_url}/api/projects/${project.id}/tasks/`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "include",
+            }
+          );
+          if (tasksRes.ok) {
+            const projectTasks = await tasksRes.json();
+            allTasks.push(...projectTasks);
+          }
+        } catch (err) {
+          console.error(`Error fetching tasks for project ${project.id}:`, err);
+          // Continue with other projects even if one fails
+        }
+      }
+
+      setTasks(allTasks);
+      return allTasks;
+    } catch (err) {
+      setError(err.message);
+      setTasks([]);
       throw err;
     } finally {
       setIsLoading(false);
@@ -294,6 +347,7 @@ function ProjectProvider({ children }) {
         getTaskFromProject,
         updateTask,
         deleteTask,
+        getAllTasks,
       }}>
       {children}
     </ProjectContext.Provider>

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Project, Task, ProjectMembership
+from .models import Project, Task, ProjectMembership, Comment
 
 # Project Admin
 @admin.register(Project)
@@ -30,3 +30,13 @@ class ProjectMembershipAdmin(admin.ModelAdmin):
     search_fields = ('user__username', 'project__name')
     list_filter = ('role', 'joined_at')
 
+# Comment Admin
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('id', 'comment', 'get_commenter', 'task', 'posted_at')
+    search_fields = ('commenter__username',)
+    list_filter = ('posted_at',)
+
+    def get_commenter(self, obj):
+        return obj.commenter.username if obj.commenter else 'None'
+    get_commenter.short_description = 'Commenter'

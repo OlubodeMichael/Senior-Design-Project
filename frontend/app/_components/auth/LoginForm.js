@@ -8,7 +8,7 @@ import TextInput from "@/app/_components/TextInput";
 import { useAuth } from "@/context/AuthProvider";
 
 export default function LoginForm() {
-  const { login } = useAuth();
+  const { login, isLoading } = useAuth();
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
@@ -111,7 +111,7 @@ export default function LoginForm() {
                 shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 
                 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
                 transition-colors duration-200">
-              Sign in
+              {isLoading ? "Logging in..." : "Login"}
             </button>
           </div>
         </form>
