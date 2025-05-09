@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Bars4Icon,
   ViewColumnsIcon,
@@ -14,11 +14,12 @@ import TaskDetailModal from "./TaskDetailModal";
 import { useProject } from "@/context/ProjectProvider";
 
 export default function TaskList({ tasks = [], projectId }) {
-  const [viewType, setViewType] = useState("board"); // 'list', 'board', or 'table'
+  const [viewType, setViewType] = useState("board");
   const [selectedTask, setSelectedTask] = useState(null);
-  const { updateTask, deleteTask, getProject, isLoading } = useProject();
+  const { updateTask, deleteTask, getProject, isLoading, project } =
+    useProject();
+  const userName = project?.owner?.first_name + " " + project?.owner?.last_name;
 
-  // Add loading indicator for task operations
   const [isTaskOperationLoading, setIsTaskOperationLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -30,6 +31,19 @@ export default function TaskList({ tasks = [], projectId }) {
         return "text-yellow-600 bg-yellow-50";
       case "low":
         return "text-green-600 bg-green-50";
+      default:
+        return "text-gray-600 bg-gray-50";
+    }
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "done":
+        return "text-green-600 bg-green-50";
+      case "in_progress":
+        return "text-yellow-600 bg-yellow-50";
+      case "todo":
+        return "text-blue-600 bg-blue-50";
       default:
         return "text-gray-600 bg-gray-50";
     }
@@ -49,7 +63,13 @@ export default function TaskList({ tasks = [], projectId }) {
   };
 
   const handleTaskClick = (task) => {
+    console.log("Task clicked:", task); // Debug log
     setSelectedTask(task);
+  };
+
+  const handleCloseModal = () => {
+    console.log("Closing modal"); // Debug log
+    setSelectedTask(null);
   };
 
   const handleUpdateTask = async (updatedTask) => {
@@ -65,7 +85,7 @@ export default function TaskList({ tasks = [], projectId }) {
         },
       });
       await getProject(projectId);
-      setSelectedTask(null);
+      handleCloseModal();
     } catch (error) {
       console.error("Error updating task:", error);
       setError("Failed to update task. Please try again.");
@@ -83,6 +103,7 @@ export default function TaskList({ tasks = [], projectId }) {
         task_id: taskId,
       });
       await getProject(projectId);
+      handleCloseModal();
     } catch (error) {
       console.error("Error deleting task:", error);
       setError("Failed to delete task. Please try again.");
@@ -106,12 +127,20 @@ export default function TaskList({ tasks = [], projectId }) {
                 <p className="text-sm text-gray-500 mt-1">{task.description}</p>
               </div>
             </div>
-            <span
-              className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(
-                task.priority
-              )}`}>
-              {task.priority}
-            </span>
+            <div className="flex flex-col items-end gap-2">
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                  task.status
+                )}`}>
+                {task.status.replace("_", " ")}
+              </span>
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(
+                  task.priority
+                )}`}>
+                {task.priority}
+              </span>
+            </div>
           </div>
         </div>
       ))}
@@ -131,8 +160,16 @@ export default function TaskList({ tasks = [], projectId }) {
           <div key={status} className="bg-gray-50 rounded-lg p-4">
             <h3 className="text-sm font-medium text-gray-900 mb-4 capitalize flex items-center">
               {getStatusIcon({ status })}
-              <span className="ml-2">{status.replace("_", " ")}</span>
-              <span className="ml-auto bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-full">
+              <span
+                className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                  status
+                )}`}>
+                {status.replace("_", " ")}
+              </span>
+              <span
+                className={`ml-auto px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                  status
+                )}`}>
                 {statusTasks?.length}
               </span>
             </h3>
@@ -142,6 +179,15 @@ export default function TaskList({ tasks = [], projectId }) {
                   key={task.id}
                   onClick={() => handleTaskClick(task)}
                   className="bg-white rounded-lg shadow p-3 cursor-pointer hover:shadow-md transition-shadow border border-gray-100">
+                  <div className="flex items-center gap-2 mb-2">
+                    {getStatusIcon(task.status)}
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                        task.status
+                      )}`}>
+                      {task.status.replace("_", " ")}
+                    </span>
+                  </div>
                   <h4 className="font-medium text-gray-900">{task.title}</h4>
                   <p className="text-sm text-gray-500 mt-1 line-clamp-2">
                     {task.description}
@@ -204,7 +250,10 @@ export default function TaskList({ tasks = [], projectId }) {
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
                   {getStatusIcon(task.status)}
-                  <span className="ml-2 text-sm text-gray-900 capitalize">
+                  <span
+                    className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                      task.status
+                    )}`}>
                     {task.status.replace("_", " ")}
                   </span>
                 </div>
@@ -296,15 +345,18 @@ export default function TaskList({ tasks = [], projectId }) {
         </div>
       )}
 
-      <TaskDetailModal
-        isOpen={!!selectedTask}
-        onClose={() => setSelectedTask(null)}
-        task={selectedTask}
-        onUpdate={handleUpdateTask}
-        onDelete={handleDeleteTask}
-        projectId={projectId}
-        isLoading={isTaskOperationLoading}
-      />
+      {selectedTask && (
+        <TaskDetailModal
+          isOpen={true}
+          onClose={handleCloseModal}
+          task={selectedTask}
+          projectId={projectId}
+          onUpdate={handleUpdateTask}
+          onDelete={handleDeleteTask}
+          isLoading={isTaskOperationLoading}
+          userName={userName}
+        />
+      )}
     </div>
   );
 }
