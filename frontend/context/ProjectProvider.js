@@ -10,19 +10,23 @@ function ProjectProvider({ children }) {
   const [tasks, setTasks] = useState(null);
   const [task, setTask] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [comments, setComments] = useState([]);
+  const [comment, setComment] = useState(null);
   const api_url =
     "https://collabflow-xzeb.onrender.com" || "http://localhost:8000";
 
   useEffect(() => {
-    getAllProjects();
+    const fetchProjects = async () => {
+      await getAllProjects();
+    };
+    fetchProjects();
   }, []);
 
   const getAllProjects = async () => {
     setError(null);
     try {
       setIsLoading(true);
-      const res = await fetch(`${api_url}/api/projects`, {
+      const res = await fetch(`${api_url}/api/projects/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -88,7 +92,7 @@ function ProjectProvider({ children }) {
     setError(null);
     try {
       setIsLoading(true);
-      const res = await fetch(`${api_url}/api/projects/${project_id}`, {
+      const res = await fetch(`${api_url}/api/projects/${project_id}/`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -186,7 +190,7 @@ function ProjectProvider({ children }) {
     try {
       setIsLoading(true);
       // First get all projects
-      const projectsRes = await fetch(`${api_url}/api/projects`, {
+      const projectsRes = await fetch(`${api_url}/api/projects/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -238,7 +242,7 @@ function ProjectProvider({ children }) {
     try {
       setIsLoading(true);
       const res = await fetch(
-        `${api_url}/api/projects/${project_id}/tasks/${task_id}`,
+        `${api_url}/api/projects/${project_id}/tasks/${task_id}/`,
         {
           method: "GET",
           headers: {
@@ -264,7 +268,7 @@ function ProjectProvider({ children }) {
     try {
       setIsLoading(true);
       const res = await fetch(
-        `${api_url}/api/projects/${project_id}/tasks/${task_id}`,
+        `${api_url}/api/projects/${project_id}/tasks/${task_id}/`,
         {
           method: "PATCH",
           headers: {
@@ -328,6 +332,84 @@ function ProjectProvider({ children }) {
     }
   };
 
+  const getTaskComments = async ({ project_id, task_id }) => {
+    setError(null);
+    try {
+      setIsLoading(true);
+      const res = await fetch(
+        `${api_url}/api/projects/${project_id}/tasks/${task_id}/comments/`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to get task comments");
+
+      const data = await res.json();
+      setComments(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const addCommentToTask = async ({ project_id, task_id, commentData }) => {
+    setError(null);
+    try {
+      setIsLoading(true);
+      const res = await fetch(
+        `${api_url}/api/projects/${project_id}/tasks/${task_id}/comments/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(commentData),
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to add comment to task");
+
+      const data = await res.json();
+      setComments((prev) => [...prev, data]);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteComment = async ({ project_id, task_id, comment_id }) => {
+    setError(null);
+    try {
+      setIsLoading(true);
+      const res = await fetch(
+        `${api_url}/api/projects/${project_id}/tasks/${task_id}/comments/${comment_id}/`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to delete comment");
+
+      setComments((prev) => prev.filter((c) => c.id !== comment_id));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <ProjectContext.Provider
       value={{
@@ -335,6 +417,8 @@ function ProjectProvider({ children }) {
         tasks,
         project,
         projects,
+        comments,
+        comment,
         isLoading,
         error,
         createProject,
@@ -348,6 +432,9 @@ function ProjectProvider({ children }) {
         updateTask,
         deleteTask,
         getAllTasks,
+        getTaskComments,
+        addCommentToTask,
+        deleteComment,
       }}>
       {children}
     </ProjectContext.Provider>

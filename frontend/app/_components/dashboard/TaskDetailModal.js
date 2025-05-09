@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { XMarkIcon, TrashIcon } from "@heroicons/react/24/outline";
+import TaskComment from "./TaskComment";
 
 export default function TaskDetailModal({
   isOpen,
@@ -10,6 +11,7 @@ export default function TaskDetailModal({
   onUpdate,
   onDelete,
   projectId,
+  userName,
 }) {
   const [editedTask, setEditedTask] = useState(task);
   const [isEditing, setIsEditing] = useState(false);
@@ -206,6 +208,14 @@ export default function TaskDetailModal({
                   className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                   Edit Task
                 </button>
+              </div>
+
+              <div className="mt-6 border-t pt-4">
+                <TaskComment
+                  userName={userName}
+                  //projectId={projectId}
+                  taskId={task.id}
+                />
               </div>
             </div>
           )}
